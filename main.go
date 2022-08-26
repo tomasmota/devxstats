@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,9 +18,15 @@ type Metric struct {
 	Description string             `bson:"description,omitempty"`
 }
 
+type Measurement struct {
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	Metric    primitive.ObjectID `bson:"metric,omitempty"`
+	Timestamp time.Time          `bson:"timestamp,omitempty"`
+	Value     float64            `bson:"value,omitempty"`
+}
+
 func main() {
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
-
 	if err != nil {
 		panic(err)
 	}
@@ -29,14 +36,42 @@ func main() {
 		panic(err)
 	}
 	metricsCollection := client.Database("devxmetrics").Collection("metrics")
+	measurementCollection := client.Database("devxmetrics").Collection("measurements")
 	defer metricsCollection.Drop(context.TODO())
+	defer measurementCollection.Drop(context.TODO())
 
 	fmt.Println("Creating metrics")
 	CreateMetrics(metricsCollection)
+
 	fmt.Println("Search metrics")
 	ReadMetrics(metricsCollection)
-	fmt.Println("Delete metrics")
-	DeleteMetrics(metricsCollection)
+
+	fmt.Println("Add Lead Time measurement")
+	AddMeasurement(metricsCollection, measurementCollection)
+
+	fmt.Println("Read Measurement")
+	// ReadMeasurement(metricsCollection)
+}
+
+func AddMeasurement(metricsCollection *mongo.Collection, measurementCollection *mongo.Collection) {
+	filter := bson.M{"name": "Lead Time"}
+
+	var metric Metric
+	err := metricsCollection.FindOne(context.TODO(), filter).Decode(&metric)
+	if err != nil {
+		panic(err)
+	}
+
+	measurement := Measurement{
+		Metric:    metric.ID,
+		Timestamp: time.Now(),
+		Value:     (time.Hour * 24 * 3).Seconds(),
+	}
+
+	_, err = measurementCollection.InsertOne(context.TODO(), measurement)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func CreateMetrics(metricsCollection *mongo.Collection) {
@@ -76,7 +111,7 @@ func ReadMetrics(metricsCollection *mongo.Collection) {
 		{Key: "$and",
 			Value: bson.A{
 				bson.D{
-					{Key: "name", Value: bson.D{{Key: "$regex", Value: "Time"}}},
+					{Key: "name", Value: "Lead Time"},
 				},
 			},
 		},
@@ -97,8 +132,4 @@ func ReadMetrics(metricsCollection *mongo.Collection) {
 		fmt.Println("  " + metric.Name + ": " + metric.Description)
 	}
 
-}
-
-func DeleteMetrics(metricsCollection *mongo.Collection) {
-	metricsCollection.DeleteMany(context.TODO(), bson.D{})
 }
