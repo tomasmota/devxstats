@@ -22,6 +22,7 @@ type Measurement struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	Metric    primitive.ObjectID `bson:"metric,omitempty"`
 	Timestamp time.Time          `bson:"timestamp,omitempty"`
+	Unit      string             `bson:"type,omitempty"`
 	Value     float64            `bson:"value,omitempty"`
 }
 
@@ -78,7 +79,7 @@ func GetMetricMeasurements(name string, metricsCollection *mongo.Collection, mea
 func OutputMeasurements(metricsCollection *mongo.Collection, measurementCollection *mongo.Collection, t *tabby.Tabby) {
 	measurements := GetMetricMeasurements("Lead Time", metricsCollection, measurementCollection)
 	for _, measurement := range measurements {
-		t.AddLine("Lead Time", measurement.Timestamp, measurement.Value)
+		t.AddLine("Lead Time", measurement.Timestamp, time.Duration(measurement.Value))
 	}
 }
 
@@ -87,7 +88,8 @@ func AddMeasurement(metricsCollection *mongo.Collection, measurementCollection *
 	measurement := Measurement{
 		Metric:    metric.ID,
 		Timestamp: time.Now(),
-		Value:     (time.Hour * 24 * 3).Seconds(),
+		Unit:      "duration",
+		Value:     float64((time.Hour * 24 * 3)),
 	}
 
 	_, err := measurementCollection.InsertOne(context.TODO(), measurement)
