@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"time"
 
+	"github.com/cheynewallace/tabby"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -40,35 +40,57 @@ func main() {
 	defer metricsCollection.Drop(context.TODO())
 	defer measurementCollection.Drop(context.TODO())
 
-	fmt.Println("Creating metrics")
 	CreateMetrics(metricsCollection)
-
-	fmt.Println("Search metrics")
-	ReadMetrics(metricsCollection)
-
-	fmt.Println("Add Lead Time measurement")
 	AddMeasurement(metricsCollection, measurementCollection)
 
-	fmt.Println("Read Measurement")
-	// ReadMeasurement(metricsCollection)
+	t := tabby.New()
+	t.AddHeader("METRIC", "TIMESTAMP", "VALUE")
+	OutputMeasurements(metricsCollection, measurementCollection, t)
+	t.Print()
 }
 
-func AddMeasurement(metricsCollection *mongo.Collection, measurementCollection *mongo.Collection) {
-	filter := bson.M{"name": "Lead Time"}
-
+func GetMetric(name string, metricsCollection *mongo.Collection) Metric {
 	var metric Metric
-	err := metricsCollection.FindOne(context.TODO(), filter).Decode(&metric)
+	err := metricsCollection.FindOne(context.TODO(), bson.M{"name": name}).Decode(&metric)
+	if err != nil {
+		panic(err)
+	}
+	return metric
+}
+
+// hmmm not so practical...
+// TODO: find out how to manage collections
+func GetMetricMeasurements(name string, metricsCollection *mongo.Collection, measurementCollection *mongo.Collection) []Measurement {
+	metric := GetMetric(name, metricsCollection)
+
+	cursor, err := measurementCollection.Find(context.TODO(), bson.M{"metric": metric.ID})
 	if err != nil {
 		panic(err)
 	}
 
+	var measurements []Measurement
+	if err = cursor.All(context.TODO(), &measurements); err != nil {
+		panic(err)
+	}
+	return measurements
+}
+
+func OutputMeasurements(metricsCollection *mongo.Collection, measurementCollection *mongo.Collection, t *tabby.Tabby) {
+	measurements := GetMetricMeasurements("Lead Time", metricsCollection, measurementCollection)
+	for _, measurement := range measurements {
+		t.AddLine("Lead Time", measurement.Timestamp, measurement.Value)
+	}
+}
+
+func AddMeasurement(metricsCollection *mongo.Collection, measurementCollection *mongo.Collection) {
+	metric := GetMetric("Lead Time", metricsCollection)
 	measurement := Measurement{
 		Metric:    metric.ID,
 		Timestamp: time.Now(),
 		Value:     (time.Hour * 24 * 3).Seconds(),
 	}
 
-	_, err = measurementCollection.InsertOne(context.TODO(), measurement)
+	_, err := measurementCollection.InsertOne(context.TODO(), measurement)
 	if err != nil {
 		panic(err)
 	}
@@ -90,46 +112,8 @@ func CreateMetrics(metricsCollection *mongo.Collection) {
 		},
 	}
 
-	insertResult, err := metricsCollection.InsertMany(context.TODO(), metrics)
+	_, err := metricsCollection.InsertMany(context.TODO(), metrics)
 	if err != nil {
 		panic(err)
 	}
-
-	contactIDs := insertResult.InsertedIDs
-
-	var contactIDs_ []primitive.ObjectID
-	for _, id := range contactIDs {
-		contactIDs_ = append(contactIDs_, id.(primitive.ObjectID))
-	}
-
-	fmt.Printf("Inserted %v %T\n", contactIDs_, contactIDs_)
-
-}
-
-func ReadMetrics(metricsCollection *mongo.Collection) {
-	filter := bson.D{
-		{Key: "$and",
-			Value: bson.A{
-				bson.D{
-					{Key: "name", Value: "Lead Time"},
-				},
-			},
-		},
-	}
-
-	cursor, err := metricsCollection.Find(context.TODO(), filter)
-	if err != nil {
-		panic(err)
-	}
-
-	var metrics []Metric
-	if err = cursor.All(context.TODO(), &metrics); err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Matching Metrics:")
-	for _, metric := range metrics {
-		fmt.Println("  " + metric.Name + ": " + metric.Description)
-	}
-
 }
