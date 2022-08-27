@@ -10,8 +10,8 @@ import (
 )
 
 type store interface {
-	AddEvent(model.CommitEvent) error
-	GetEvents(projectName string) ([]model.CommitEvent, error)
+	AddCommit(model.Commit) error
+	GetCommits(projectName string) ([]model.Commit, error)
 }
 
 type storeImpl struct {

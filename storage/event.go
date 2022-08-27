@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (storeImpl *storeImpl) AddEvent(event model.CommitEvent) error {
+func (storeImpl *storeImpl) AddCommit(event model.Commit) error {
 	eventsCollection := storeImpl.db.Database("devxstats").Collection("events")
 
 	_, err := eventsCollection.InsertOne(context.TODO(), event)
@@ -17,11 +17,11 @@ func (storeImpl *storeImpl) AddEvent(event model.CommitEvent) error {
 	return nil
 }
 
-func (storeImpl *storeImpl) GetEvents(projectName string) ([]model.CommitEvent, error) {
+func (storeImpl *storeImpl) GetCommits(group string) ([]model.Commit, error) {
 	eventsCollection := storeImpl.db.Database("devxstats").Collection("events")
 
-	var events []model.CommitEvent
-	cursor, err := eventsCollection.Find(context.TODO(), bson.M{"project": projectName})
+	var events []model.Commit
+	cursor, err := eventsCollection.Find(context.TODO(), bson.M{"group": group})
 	if err != nil {
 		return nil, err
 	}

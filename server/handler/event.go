@@ -8,15 +8,18 @@ import (
 	"time"
 )
 
-func AddEvent(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("request for adding event")
-	event := model.CommitEvent{
+// TODO: Make plural
+func AddCommit(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("request for adding commit")
+	event := model.Commit{
 		Timestamp: time.Now(),
-		Project:   "ABCD",
+		Group:     "ABCD",
 		Repo:      "devxstats",
+		System:    "Github",
+		User:      "tomas-mota",
 	}
 
-	err := storage.DBStore.AddEvent(event)
+	err := storage.DBStore.AddCommit(event)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -25,11 +28,11 @@ func AddEvent(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, event)
 }
 
-func GetEvents(w http.ResponseWriter, r *http.Request) {
+func GetCommits(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("request for events")
-	projectName := "ABCD" // for now assume request is for events in this project
+	group := "ABCD" // for now assume request is for events in this project
 
-	events, err := storage.DBStore.GetEvents(projectName)
+	events, err := storage.DBStore.GetCommits(group)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
