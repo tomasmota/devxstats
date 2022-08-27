@@ -27,13 +27,13 @@ func AddEvent(w http.ResponseWriter, r *http.Request) {
 
 func GetEvents(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("request for events")
-	projectName = "ABCD" // for now assume request is for events in this project
+	projectName := "ABCD" // for now assume request is for events in this project
 
-	err := storage.DBStore.GetEvents(event)
+	events, err := storage.DBStore.GetEvents(projectName)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, event)
+	respondWithJSON(w, http.StatusOK, events)
 }

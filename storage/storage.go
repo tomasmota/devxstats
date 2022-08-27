@@ -11,7 +11,7 @@ import (
 
 type store interface {
 	AddEvent(model.CommitEvent) error
-	GetEvents(projectName string) (*model.CommitEvent, error)
+	GetEvents(projectName string) ([]model.CommitEvent, error)
 }
 
 type storeImpl struct {

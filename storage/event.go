@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	"devxstats/model"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -11,21 +10,25 @@ import (
 func (storeImpl *storeImpl) AddEvent(event model.CommitEvent) error {
 	eventsCollection := storeImpl.db.Database("devxstats").Collection("events")
 
-	insertResult, err := eventsCollection.InsertOne(context.TODO(), event)
+	_, err := eventsCollection.InsertOne(context.TODO(), event)
 	if err != nil {
 		return err
 	}
-	log.Println(insertResult) //TODO: remove this
 	return nil
 }
 
-func (storeImpl *storeImpl) GetEvents(projectName string) (model.CommitEvent, error) {
+func (storeImpl *storeImpl) GetEvents(projectName string) ([]model.CommitEvent, error) {
 	eventsCollection := storeImpl.db.Database("devxstats").Collection("events")
 
-	var event model.CommitEvent
-	err := eventsCollection.FindOne(context.TODO(), bson.M{"project": projectName}).Decode(&event)
+	var events []model.CommitEvent
+	cursor, err := eventsCollection.Find(context.TODO(), bson.M{"project": projectName})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return event, nil
+
+	if err = cursor.All(context.TODO(), &events); err != nil {
+		return nil, err
+	}
+
+	return events, nil
 }
