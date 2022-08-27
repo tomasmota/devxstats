@@ -6,7 +6,19 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/schema"
 )
+
+var decoder = schema.NewDecoder()
+
+type CommitFilter struct {
+	Team   string `schema:"team"`
+	System string `schema:"system"`
+	Group  string `schema:"group"`
+	Repo   string `schema:"repo"`
+	User   string `schema:"user"`
+}
 
 func AddCommits(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("request for adding commit")
@@ -40,9 +52,13 @@ func AddCommits(w http.ResponseWriter, r *http.Request) {
 
 func GetCommits(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("request for events")
-	group := "ABCD" // for now assume request is for events in this project
-
-	events, err := storage.DBStore.GetCommits(group)
+	var filter CommitFilter
+	err := decoder.Decode(&filter, r.URL.Query())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	events, err := storage.DBStore.GetCommits(filter.Group)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return

@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/cheynewallace/tabby v1.1.1
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/schema v1.2.0
 	go.mongodb.org/mongo-driver v1.10.1
 )
 
