@@ -5,12 +5,13 @@ import (
 	"devxstats/model"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (storeImpl *storeImpl) AddCommit(event model.Commit) error {
+func (storeImpl *storeImpl) AddCommits(events []interface{}) error {
 	eventsCollection := storeImpl.db.Database("devxstats").Collection("events")
 
-	_, err := eventsCollection.InsertOne(context.TODO(), event)
+	_, err := eventsCollection.InsertMany(context.TODO(), events, &options.InsertManyOptions{})
 	if err != nil {
 		return err
 	}

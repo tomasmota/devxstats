@@ -9,6 +9,7 @@ import (
 type Commit struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	Timestamp time.Time          `bson:"timestamp,omitempty"`
+	Team      string             `bson:"team,omitempty"`
 	System    string             `bson:"system,omitempty"` // e.g. Github, Bitbucket
 	Group     string             `bson:"group,omitempty"`  // Github org, Bitbucket project
 	Repo      string             `bson:"repo,omitempty"`
@@ -18,6 +19,7 @@ type Commit struct {
 type Deployment struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	Timestamp time.Time          `bson:"timestamp,omitempty"`
+	Team      string             `bson:"team,omitempty"`
 	System    string             `bson:"system,omitempty"`
 	Group     string             `bson:"group,omitempty"`
 	Project   string             `bson:"project,omitempty"`

@@ -10,7 +10,7 @@ import (
 )
 
 type store interface {
-	AddCommit(model.Commit) error
+	AddCommits([]interface{}) error
 	GetCommits(projectName string) ([]model.Commit, error)
 }
 

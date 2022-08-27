@@ -8,24 +8,34 @@ import (
 	"time"
 )
 
-// TODO: Make plural
-func AddCommit(w http.ResponseWriter, r *http.Request) {
+func AddCommits(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("request for adding commit")
-	event := model.Commit{
-		Timestamp: time.Now(),
-		Group:     "ABCD",
-		Repo:      "devxstats",
-		System:    "Github",
-		User:      "tomas-mota",
+	events := []interface{}{
+		model.Commit{
+			Timestamp: time.Now(),
+			Team:      "devx",
+			Group:     "ABCD",
+			Repo:      "devxstats",
+			System:    "Github",
+			User:      "tomas-mota",
+		},
+		model.Commit{
+			Timestamp: time.Now(),
+			Team:      "devx",
+			Group:     "EFGH",
+			Repo:      "devxstats2",
+			System:    "bitbucket",
+			User:      "jane doe",
+		},
 	}
 
-	err := storage.DBStore.AddCommit(event)
+	err := storage.DBStore.AddCommits(events)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, event)
+	respondWithJSON(w, http.StatusOK, events)
 }
 
 func GetCommits(w http.ResponseWriter, r *http.Request) {
