@@ -14,7 +14,6 @@ type App struct {
 
 func (app *App) InitializeRoutes() {
 	app.Router = mux.NewRouter()
-	app.Router.HandleFunc("/events", handler.AddCommits).Methods("POST")
 	app.Router.HandleFunc("/events", handler.GetCommits).Methods("GET")
 }
 

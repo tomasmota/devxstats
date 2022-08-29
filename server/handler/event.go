@@ -1,11 +1,9 @@
 package handler
 
 import (
-	"devxstats/model"
 	"devxstats/storage"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/schema"
 )
@@ -20,35 +18,35 @@ type CommitFilter struct {
 	User   string `schema:"user"`
 }
 
-func AddCommits(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("request for adding commit")
-	events := []interface{}{
-		model.Commit{
-			Timestamp: time.Now(),
-			Team:      "devx",
-			Group:     "ABCD",
-			Repo:      "devxstats",
-			System:    "Github",
-			User:      "tomas-mota",
-		},
-		model.Commit{
-			Timestamp: time.Now(),
-			Team:      "devx",
-			Group:     "EFGH",
-			Repo:      "devxstats2",
-			System:    "bitbucket",
-			User:      "jane doe",
-		},
-	}
+// func AddCommits(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Println("request for adding commit")
+// 	events := []interface{}{
+// 		model.Commit{
+// 			Timestamp: time.Now(),
+// 			Team:      "devx",
+// 			Group:     "ABCD",
+// 			Repo:      "devxstats",
+// 			System:    "Github",
+// 			User:      "tomas-mota",
+// 		},
+// 		model.Commit{
+// 			Timestamp: time.Now(),
+// 			Team:      "devx",
+// 			Group:     "EFGH",
+// 			Repo:      "devxstats2",
+// 			System:    "bitbucket",
+// 			User:      "jane doe",
+// 		},
+// 	}
 
-	err := storage.DBStore.AddCommits(events)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
+// 	err := storage.DBStore.AddCommits(events)
+// 	if err != nil {
+// 		respondWithError(w, http.StatusInternalServerError, err.Error())
+// 		return
+// 	}
 
-	respondWithJSON(w, http.StatusOK, events)
-}
+// 	respondWithJSON(w, http.StatusOK, events)
+// }
 
 func GetCommits(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("request for events")

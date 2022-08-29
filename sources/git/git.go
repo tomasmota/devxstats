@@ -1,29 +1,43 @@
 package sources
 
-import "devxstats/model"
+import (
+	"devxstats/model"
+	"fmt"
+)
 
-type git struct{}
+type git struct {
+	sources []GitSource
+}
 
 type GitSource interface {
 	GetCommits() ([]model.Commit, error)
 	GetOpenPullRequests() ([]model.PullRequest, error)
 }
 
-func getSources( /*configuration of sources will somehow get injected into this method*/ ) GitSource {
-
-	// var sources []*GitSource
-
-	return BitbucketSource{baseUrl: "asdf"}
-
+func NewGit( /*configuration of sources will somehow get injected into this method*/ ) *git {
+	git := &git{}
 	// if config.contains("github") {
-	////// sources = append(sources, newGithubSource())
+	git.sources = append(git.sources, newGithubSource())
 	// }
 	// if config.contains("bitbucket") {
-	////// sources = append(sources, newBitbucketSource())
+	git.sources = append(git.sources, newBitbucketSource())
 	// }
-	// return sources
+	return git
 }
 
-func (git *git) Fetch() {
-	return
+func (git *git) Sync() error {
+	for _, source := range git.sources {
+		commits, err := source.GetCommits()
+		if err != nil {
+			return err
+		}
+		fmt.Printf("Commits: %v\n", len(commits)) //TODO: Persist to database
+
+		openPullRequests, err := source.GetOpenPullRequests()
+		if err != nil {
+			return err
+		}
+		fmt.Printf("Open Pull Requests: %v\n", len(openPullRequests)) //TODO: Persist to database
+	}
+	return nil
 }

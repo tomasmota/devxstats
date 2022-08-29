@@ -13,7 +13,5 @@ TODO:
         - k8s
         - octopus
     - documentation
-    .
-    .
-    .
+    - others
 - decide on database

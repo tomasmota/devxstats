@@ -1,6 +1,9 @@
 package sources
 
-import "devxstats/model"
+import (
+	"devxstats/model"
+	"fmt"
+)
 
 type BitbucketSource struct {
 	baseUrl string
@@ -8,13 +11,15 @@ type BitbucketSource struct {
 }
 
 func newBitbucketSource() *BitbucketSource {
-	return &BitbucketSource{baseUrl: "changeme.com"}
+	return &BitbucketSource{baseUrl: "bitbucket.com"}
 }
 
 func (bitbucketSource *BitbucketSource) GetCommits() ([]model.Commit, error) {
+	fmt.Println("Fetching commits from bitbucket")
 	return nil, nil
 }
 
-func (bitbucketSource *BitbucketSource) GetOpenPullRequests() ([]model.Commit, error) {
+func (bitbucketSource *BitbucketSource) GetOpenPullRequests() ([]model.PullRequest, error) {
+	fmt.Println("Fetching open pull requests from bitbucket")
 	return nil, nil
 }
