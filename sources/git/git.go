@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type git struct {
+type gitSources struct {
 	sources []GitSource
 }
 
@@ -14,8 +14,8 @@ type GitSource interface {
 	GetOpenPullRequests() ([]model.PullRequest, error)
 }
 
-func NewGit( /*configuration of sources will somehow get injected into this method*/ ) *git {
-	git := &git{}
+func NewGit( /*configuration of sources will somehow get injected into this method*/ ) *gitSources {
+	git := &gitSources{}
 	// if config.contains("github") {
 	git.sources = append(git.sources, newGithubSource())
 	// }
@@ -25,7 +25,7 @@ func NewGit( /*configuration of sources will somehow get injected into this meth
 	return git
 }
 
-func (git *git) Sync() error {
+func (git *gitSources) Sync() error {
 	for _, source := range git.sources {
 		commits, err := source.GetCommits()
 		if err != nil {

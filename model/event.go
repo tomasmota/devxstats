@@ -6,6 +6,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type Build struct {
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	StartTime time.Time          `bson:"starttime,omitempty"`
+	EndTime   time.Time          `bson:"endtime,omitempty"`
+	Team      string             `bson:"team,omitempty"`
+	System    string             `bson:"system,omitempty"` // e.g. Tekton, Teamcity
+	Group     string             `bson:"group,omitempty"`  // tekton namespace, teamcity high-level project
+	Project   string             `bson:"repo,omitempty"`   // tekton pipeline, teamcity project
+	User      string             `bson:"user,omitempty"`
+}
+
 type PullRequest struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	Timestamp time.Time          `bson:"timestamp,omitempty"`
@@ -28,8 +39,8 @@ type Commit struct {
 
 type Deployment struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	StartTime time.Time          `bson:"timestamp,omitempty"`
-	EndTime   time.Time          `bson:"timestamp,omitempty"`
+	StartTime time.Time          `bson:"starttime,omitempty"`
+	EndTime   time.Time          `bson:"endtime,omitempty"`
 	Team      string             `bson:"team,omitempty"`
 	System    string             `bson:"system,omitempty"`
 	Group     string             `bson:"group,omitempty"`

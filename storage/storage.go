@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	"devxstats/model"
-	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -26,7 +25,7 @@ func InitializeDB() {
 
 	initStore(&storeImpl{db: client})
 	if err != nil {
-		log.Fatal("could not connect storage", err)
+		panic(err)
 	}
 }
 

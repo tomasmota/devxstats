@@ -15,3 +15,6 @@ TODO:
     - documentation
     - others
 - decide on database
+- add application configuration file
+- define the code for a specific source
+- restructure storage package to mirror sources structure
