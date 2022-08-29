@@ -1,17 +1,19 @@
-REST api for adding, storing and retrieving metrics around Developer Experience
-
-# Endpoints
-## /events/commit (POST)
-## /events/deployment (POST)
-
-## /events/commit?from={date}&to={date}&team={team} (GET)
-- Retrieve raw events, e.g. all commits from team y over the past month
-
-## /metrics/{metric_name}?team=y (GET)
-- Retrieve an aggregated metric, e.g. average weekly commits from team y over the past year
+Service that fetches and stores developer experience related metrics from different sources and makes them available through an api
 
 TODO:
-- read request filter from query parameters
-- add deployment endpoint
-- implement rest endpoints
-- decide on database (nosql vs timeseries vs columnar)
+- implement fetching architecture, should support types such as:
+    - git
+        - bitbucket
+        - github
+    - builds
+        - ghactions
+        - teamcity
+        - tekton
+    - deployments
+        - k8s
+        - octopus
+    - documentation
+    .
+    .
+    .
+- decide on database
