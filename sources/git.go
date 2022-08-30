@@ -2,24 +2,26 @@ package sources
 
 import (
 	"devxstats/model"
+	"devxstats/pkg/bitbucket"
+	"devxstats/pkg/github"
 )
 
 type gitSources struct {
-	sources []GitSource
+	sources []GitClient
 }
 
-type GitSource interface {
+type GitClient interface {
 	GetCommits() ([]model.Commit, error)
 	GetOpenPullRequests() ([]model.PullRequest, error)
 }
 
 func NewGitSources( /*configuration of sources will somehow get injected into this method*/ ) *gitSources {
 	git := &gitSources{}
-	// if config.contains("github") {
-	git.sources = append(git.sources, newGithubSource())
-	// }
 	// if config.contains("bitbucket") {
-	git.sources = append(git.sources, newBitbucketSource())
+	git.sources = append(git.sources, bitbucket.GetClient("bitbucket.com")) //TODO: pass in config params
+	// }
+	// if config.contains("github") {
+	git.sources = append(git.sources, github.GetClient("github.com")) //TODO: pass in config params
 	// }
 	return git
 }

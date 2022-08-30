@@ -2,6 +2,7 @@ package sources
 
 import (
 	"devxstats/model"
+	"devxstats/pkg/tekton"
 )
 
 type buildSources struct {
@@ -15,7 +16,7 @@ type BuildSources interface {
 func NewBuildSources( /*configuration of sources will somehow get injected into this method*/ ) *buildSources {
 	buildSources := &buildSources{}
 	// if config.contains("tekton") {
-	buildSources.sources = append(buildSources.sources, newTektonSource())
+	buildSources.sources = append(buildSources.sources, tekton.GetClient("k8s.cluster.local"))
 	// }
 	return buildSources
 }

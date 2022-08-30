@@ -1,17 +1,23 @@
 package tekton
 
-import "devxstats/model"
+import (
+	"devxstats/model"
+	"fmt"
+)
 
-type Client interface {
-	GetBuilds() ([]model.Build, error)
+var GetClient = getClient
+
+type clientImpl struct {
+	clusterUrl string
 }
 
-type clientImpl struct{}
-
-func getClient() Client {
-	return clientImpl{}
+func getClient(clusterUrl string) clientImpl {
+	return clientImpl{
+		clusterUrl: clusterUrl,
+	}
 }
 
 func (clientImpl) GetBuilds() ([]model.Build, error) {
-	panic("unimplemented")
+	fmt.Println("Fetching builds from tekton")
+	return nil, nil
 }

@@ -1,18 +1,28 @@
 package github
 
-import "devxstats/model"
+import (
+	"devxstats/model"
+	"fmt"
+)
 
-type Client interface {
-	GetOpenPullRequests() ([]model.PullRequest, error)
+var GetClient = getClient
+
+type clientImpl struct {
+	baseUrl string
 }
 
-type clientImpl struct{}
-
-func getClient() Client {
-	return clientImpl{}
+func getClient(baseUrl string) clientImpl {
+	return clientImpl{
+		baseUrl: baseUrl,
+	}
 }
 
-// GetOpenPullRequests implements Client
 func (clientImpl) GetOpenPullRequests() ([]model.PullRequest, error) {
-	panic("unimplemented")
+	fmt.Println("Fetching open pull requests from github")
+	return nil, nil
+}
+
+func (clientImpl) GetCommits() ([]model.Commit, error) {
+	fmt.Println("Fetching commits from github")
+	return nil, nil
 }

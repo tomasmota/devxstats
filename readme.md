@@ -19,4 +19,3 @@ TODO:
 - define the code for a specific source
 - restructure storage package to mirror sources structure
 - consider defining a separate model for each client communicating to a source
-- consider removing specific sources from source folder and just using pkg

@@ -2,16 +2,15 @@ package main
 
 import (
 	"devxstats/server"
-	build "devxstats/sources/build"
-	git "devxstats/sources/git"
+	"devxstats/sources"
 	"devxstats/storage"
 	"fmt"
 	"time"
 )
 
 func syncSources() {
-	gitSources := git.NewGitSources()
-	buildSources := build.NewBuildSources()
+	gitSources := sources.NewGitSources()
+	buildSources := sources.NewBuildSources()
 	for {
 		fmt.Println("Syncing Sources")
 		gitSources.Sync()
