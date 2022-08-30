@@ -2,6 +2,7 @@ package sources
 
 import (
 	"devxstats/model"
+	"devxstats/pkg/github"
 	"devxstats/storage"
 	"fmt"
 	"time"
@@ -9,6 +10,7 @@ import (
 
 type GithubSource struct {
 	baseUrl string
+	client  github.Client
 	//...
 }
 
@@ -48,5 +50,9 @@ func (githubSource *GithubSource) GetCommits() ([]model.Commit, error) {
 
 func (githubSource *GithubSource) GetOpenPullRequests() ([]model.PullRequest, error) {
 	fmt.Println("Fetching open pull requests from github")
-	return nil, nil
+	openPullRequests, err := githubSource.client.GetOpenPullRequests()
+	if err != nil {
+		return nil, err
+	}
+	return openPullRequests, nil
 }

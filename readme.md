@@ -18,3 +18,4 @@ TODO:
 - add application configuration file
 - define the code for a specific source
 - restructure storage package to mirror sources structure
+- consider defining a separate model for each client communicating to a source

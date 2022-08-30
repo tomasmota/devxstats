@@ -19,6 +19,7 @@ func syncSources() {
 		time.Sleep(1000 * time.Millisecond)
 	}
 }
+
 func main() {
 	app := &server.App{}
 
