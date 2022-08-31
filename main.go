@@ -1,7 +1,7 @@
 package main
 
 import (
-	"devxstats/internal/build"
+	"devxstats/internal/cd"
 	"devxstats/internal/git"
 	"devxstats/server"
 	"devxstats/storage"
@@ -10,12 +10,12 @@ import (
 )
 
 func syncSources() {
-	gitSources := git.NewGitSources()
-	buildSources := build.NewBuildSources()
+	git := git.NewGitSyncer()
+	cd := cd.NewCdSyncer()
 	for {
-		fmt.Println("Syncing Sources")
-		gitSources.Sync()
-		buildSources.Sync()
+		fmt.Println("\n---- Syncing Sources ----")
+		git.Sync()
+		cd.Sync()
 		time.Sleep(1000 * time.Millisecond)
 	}
 }

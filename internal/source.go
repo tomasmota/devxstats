@@ -1,5 +1,5 @@
-package sources
+package source
 
-type source interface {
+type Syncer interface {
 	Sync() error
 }

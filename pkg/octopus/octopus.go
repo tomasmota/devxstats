@@ -1,9 +1,12 @@
 package tekton
 
 import (
-	"devxstats/model"
 	"fmt"
 )
+
+type Deployment struct {
+	// placeholder
+}
 
 var GetClient = getClient
 
@@ -17,7 +20,7 @@ func getClient(clusterUrl string) clientImpl {
 	}
 }
 
-func (clientImpl) GetBuilds() ([]model.Build, error) {
-	fmt.Println("Fetching builds from tekton")
-	return nil, nil
+func (clientImpl) GetDeployments() ([]*Deployment, error) {
+	fmt.Println("Fetching deployments from octopus")
+	return []*Deployment{{}}, nil
 }
