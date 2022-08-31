@@ -1,4 +1,4 @@
-package sources
+package git
 
 import (
 	"devxstats/model"
