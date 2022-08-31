@@ -16,11 +16,21 @@ type GitClient interface {
 }
 
 func NewGitSyncer( /*configuration of sources will somehow get injected into this method*/ ) *GitSyncer {
-	git := &GitSyncer{}
+	syncer := &GitSyncer{}
 	// Add sources based on configuration
-	git.sources = append(git.sources, bitbucket.GetClient("bitbucket.com")) //TODO: pass in config params
-	git.sources = append(git.sources, github.GetClient("github.com"))       //TODO: pass in config params
-	return git
+	bc, err := bitbucket.NewBitbucketClient("https://dcgit.dac.local")
+	if err != nil {
+		panic(err)
+	}
+	syncer.sources = append(syncer.sources, bc)
+
+	gc, err := github.NewGithubClient("https://github.com")
+	if err != nil {
+		panic(err)
+	}
+	syncer.sources = append(syncer.sources, gc)
+
+	return syncer
 }
 
 func (git *GitSyncer) Sync() error {

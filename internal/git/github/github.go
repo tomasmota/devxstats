@@ -5,27 +5,29 @@ import (
 	"fmt"
 
 	"github.com/drone/go-scm/scm"
+	"github.com/drone/go-scm/scm/driver/github"
 )
 
-var GetClient = getClient
-
-type clientImpl struct {
-	baseUrl string
+type githubClient struct {
+	Client *scm.Client
 }
 
-func getClient(baseUrl string) clientImpl {
-	return clientImpl{
-		baseUrl: baseUrl,
+func NewGithubClient(baseUrl string) (*githubClient, error) {
+	c, err := github.New(baseUrl)
+	if err != nil {
+		return nil, fmt.Errorf("an error occured while creating bitbucket client: %v", err)
 	}
+
+	return &githubClient{Client: c}, nil
 }
 
-func (clientImpl) GetOpenPullRequests() ([]*model.PullRequest, error) {
+func (githubClient) GetOpenPullRequests() ([]*model.PullRequest, error) {
 	fmt.Println("Fetching open pull requests")
 	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
 	return convertPullRequests(prs...), nil
 }
 
-func (clientImpl) GetCommits() ([]*model.Commit, error) {
+func (githubClient) GetCommits() ([]*model.Commit, error) {
 	fmt.Println("Fetching commits")
 	commits := []*scm.Commit{{}} // TODO: Fetch commits here
 	return convertCommits(commits...), nil

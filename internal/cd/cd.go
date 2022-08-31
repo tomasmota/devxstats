@@ -14,10 +14,13 @@ type CdClient interface {
 }
 
 func NewCdSyncer( /*configuration of sources will somehow get injected into this method*/ ) *CdSyncer {
-	git := &CdSyncer{}
-	// Add sources based on configuration
-	git.sources = append(git.sources, octopus.GetClient("octopus.com")) //TODO: pass in config params
-	return git
+	syncer := &CdSyncer{}
+	oc, err := octopus.NewOctopusClient("octopus.com")
+	if err != nil {
+		panic(err)
+	}
+	syncer.sources = append(syncer.sources, oc)
+	return syncer
 }
 
 func (git *CdSyncer) Sync() error {
