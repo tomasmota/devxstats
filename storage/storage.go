@@ -3,9 +3,12 @@ package storage
 import (
 	"context"
 	"devxstats/model"
+	"fmt"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type store interface {
@@ -18,15 +21,19 @@ type storeImpl struct {
 }
 
 func InitializeDB() {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://db:27017"))
 	if err != nil {
-		panic(err)
+		panic(fmt.Errorf("an error occured while creating database connection: %v", err))
+	}
+
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		panic(fmt.Errorf("an error occured while pinging database: %v", err))
 	}
 
 	initStore(&storeImpl{db: client})
-	if err != nil {
-		panic(err)
-	}
 }
 
 var DBStore store
