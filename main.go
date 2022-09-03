@@ -14,7 +14,8 @@ import (
 )
 
 type AppConfig struct {
-	Port int `env:"PORT"`
+	Port  int    `env:"PORT"`
+	DbUri string `env:"DB_URI"`
 }
 
 func syncSources() {
@@ -36,7 +37,7 @@ func main() {
 	}
 	app := &server.App{}
 
-	storage.InitializeDB()
+	storage.InitializeDB(c.DbUri)
 	go syncSources()
 	app.InitializeRoutes()
 	app.Run(fmt.Sprintf(":%d", c.Port))

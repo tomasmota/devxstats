@@ -20,10 +20,10 @@ type storeImpl struct {
 	db *mongo.Client
 }
 
-func InitializeDB() {
+func InitializeDB(dbUri string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://db:27017"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(dbUri))
 	if err != nil {
 		panic(fmt.Errorf("an error occured while creating database connection: %v", err))
 	}
