@@ -1,13 +1,21 @@
 package main
 
 import (
+	"context"
 	"devxstats/internal/cd"
 	"devxstats/internal/git"
 	"devxstats/server"
 	"devxstats/storage"
 	"fmt"
+	"log"
 	"time"
+
+	"github.com/sethvargo/go-envconfig"
 )
+
+type AppConfig struct {
+	Port int `env:"PORT"`
+}
 
 func syncSources() {
 	git := git.NewGitSyncer()
@@ -21,10 +29,15 @@ func syncSources() {
 }
 
 func main() {
+	ctx := context.Background()
+	var c AppConfig
+	if err := envconfig.Process(ctx, &c); err != nil {
+		log.Fatal(err)
+	}
 	app := &server.App{}
 
 	storage.InitializeDB()
 	go syncSources()
 	app.InitializeRoutes()
-	app.Run(":8080")
+	app.Run(fmt.Sprintf(":%d", c.Port))
 }

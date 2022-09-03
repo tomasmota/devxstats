@@ -4,5 +4,7 @@ services:
     image: devxstats
     ports:
       - "8080:8080"
+    environment:
+      - PORT=8080
   db:
     image: mongo
