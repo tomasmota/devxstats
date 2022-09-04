@@ -19,7 +19,11 @@ type GitClient interface {
 func NewGitSyncer(c *config.GitConfig) *GitSyncer {
 	syncer := &GitSyncer{}
 	// Add sources based on configuration
-	bc, err := bitbucket.NewBitbucketClient("https://dcgit.dac.local")
+	bc, err := bitbucket.NewBitbucketClient(
+		&bitbucket.BitbucketConfig{
+			BaseUrl: c.Bitbucket.Url,
+			Token:   c.Bitbucket.Token,
+		})
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +37,6 @@ func NewGitSyncer(c *config.GitConfig) *GitSyncer {
 	if err != nil {
 		panic(err)
 	}
-
 	syncer.sources = append(syncer.sources, githubClient)
 
 	return syncer

@@ -11,14 +11,15 @@ import (
 )
 
 type GithubConfig struct {
-	Token   string
 	BaseUrl string
+	Token   string
 }
 
 type githubClient struct {
 	Client *scm.Client
 }
 
+// Creates a new client from *GithubConfig
 func NewClient(config *GithubConfig) (*githubClient, error) {
 	var c *scm.Client
 	var err error
@@ -36,8 +37,6 @@ func NewClient(config *GithubConfig) (*githubClient, error) {
 			Token: config.Token,
 		},
 	}
-
-	fmt.Println("api endpoint: ", c.BaseURL) //TODO: remove after testing
 
 	return &githubClient{Client: c}, nil
 }

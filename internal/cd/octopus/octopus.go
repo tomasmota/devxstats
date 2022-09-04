@@ -10,18 +10,22 @@ import (
 	od "github.com/OctopusDeploy/go-octopusdeploy/octopusdeploy"
 )
 
+type OctopusConfig struct {
+	BaseUrl string
+	Token   string
+}
+
 type octopusClient struct {
 	Client *od.Client
 }
 
-func NewOctopusClient(baseUrl string) (*octopusClient, error) {
-	_, err := url.Parse(baseUrl)
+func NewOctopusClient(config *OctopusConfig) (*octopusClient, error) {
+	url, err := url.Parse(config.BaseUrl)
 	if err != nil {
 		return nil, fmt.Errorf("an error occured while parsing octoups url: %v", err)
 	}
 
-	// c, err := od.NewClient(nil, url, "apikey goes here", "")
-	c := &od.Client{} // TODO: replace by real client once we can load apikey from config
+	c, err := od.NewClient(nil, url, config.Token, "")
 	if err != nil {
 		log.Fatalf("error creating octopus client: %v", err)
 	}

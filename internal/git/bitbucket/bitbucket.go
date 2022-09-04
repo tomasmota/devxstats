@@ -3,21 +3,33 @@ package bitbucket
 import (
 	"devxstats/model"
 	"fmt"
+	"net/http"
 
 	"github.com/drone/go-scm/scm"
 	"github.com/drone/go-scm/scm/driver/stash"
+	"github.com/drone/go-scm/scm/transport"
 )
 
-const defaultBaseUrl string = "https://bitbucket.example.com/rest/api"
+type BitbucketConfig struct {
+	BaseUrl string
+	Token   string
+}
 
 type bitbucketClient struct {
 	Client *scm.Client
 }
 
-func NewBitbucketClient(baseUrl string) (*bitbucketClient, error) {
-	c, err := stash.New(baseUrl)
+func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
+
+	c, err := stash.New(config.BaseUrl)
 	if err != nil {
 		return nil, fmt.Errorf("an error occured while creating bitbucket client: %v", err)
+	}
+
+	c.Client = &http.Client{
+		Transport: &transport.PrivateToken{
+			Token: config.Token,
+		},
 	}
 
 	return &bitbucketClient{Client: c}, nil
