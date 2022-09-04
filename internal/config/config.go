@@ -14,18 +14,18 @@ type DbConfig struct {
 
 type GitConfig struct {
 	Github struct {
-		Token string `env:"GITHUB_TOKEN,required"`
+		Token string `env:"GITHUB_TOKEN"`
 		Url   string `env:"GITHUB_URL"`
 	}
 	Bitbucket struct {
-		Url   string `env:"BITBUCKET_URL,required"`
-		Token string `env:"BITBUCKET_TOKEN,required"`
+		Url   string `env:"BITBUCKET_URL"`
+		Token string `env:"BITBUCKET_TOKEN"`
 	}
 }
 
 type CdConfig struct {
 	Octopus struct {
-		Token string `env:"OCTOPUS_TOKEN,required"`
-		Url   string `env:"OCTOPUS_URL,required"`
+		Token string `env:"OCTOPUS_TOKEN"`
+		Url   string `env:"OCTOPUS_URL"`
 	}
 }

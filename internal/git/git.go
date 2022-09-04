@@ -5,6 +5,7 @@ import (
 	"devxstats/internal/git/bitbucket"
 	"devxstats/internal/git/github"
 	"devxstats/model"
+	"flag"
 )
 
 type GitSyncer struct {
@@ -17,27 +18,34 @@ type GitClient interface {
 }
 
 func NewGitSyncer(c *config.GitConfig) *GitSyncer {
-	syncer := &GitSyncer{}
-	// Add sources based on configuration
-	bc, err := bitbucket.NewBitbucketClient(
-		&bitbucket.BitbucketConfig{
-			BaseUrl: c.Bitbucket.Url,
-			Token:   c.Bitbucket.Token,
-		})
-	if err != nil {
-		panic(err)
-	}
-	syncer.sources = append(syncer.sources, bc)
+	githubEnabled := flag.Bool("github", false, "Set to true to enable github source")
+	bitbucketEnabled := flag.Bool("bitbucket", false, "Set to true to enable bitbucket source")
+	flag.Parse()
 
-	githubClient, err := github.NewClient(
-		&github.GithubConfig{
-			BaseUrl: c.Github.Url,
-			Token:   c.Github.Token,
-		})
-	if err != nil {
-		panic(err)
+	syncer := &GitSyncer{}
+	if *bitbucketEnabled {
+		// Add sources based on configuration
+		bc, err := bitbucket.NewBitbucketClient(
+			&bitbucket.BitbucketConfig{
+				BaseUrl: c.Bitbucket.Url,
+				Token:   c.Bitbucket.Token,
+			})
+		if err != nil {
+			panic(err)
+		}
+		syncer.sources = append(syncer.sources, bc)
 	}
-	syncer.sources = append(syncer.sources, githubClient)
+	if *githubEnabled {
+		githubClient, err := github.NewClient(
+			&github.GithubConfig{
+				BaseUrl: c.Github.Url,
+				Token:   c.Github.Token,
+			})
+		if err != nil {
+			panic(err)
+		}
+		syncer.sources = append(syncer.sources, githubClient)
+	}
 
 	return syncer
 }

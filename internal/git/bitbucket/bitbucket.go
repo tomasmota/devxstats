@@ -20,6 +20,7 @@ type bitbucketClient struct {
 }
 
 func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
+	fmt.Println("creating bitbucket client")
 
 	c, err := stash.New(config.BaseUrl)
 	if err != nil {
@@ -36,13 +37,13 @@ func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
 }
 
 func (c *bitbucketClient) GetOpenPullRequests() ([]*model.PullRequest, error) {
-	fmt.Println("Fetching open pull requests")
+	fmt.Println("Fetching bitbucket open pull requests")
 	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
 	return convertPullRequests(prs...), nil
 }
 
 func (c *bitbucketClient) GetCommits() ([]*model.Commit, error) {
-	fmt.Println("Fetching commits")
+	fmt.Println("Fetching bitbucket commits")
 	commits := []*scm.Commit{{}} // TODO: Fetch commits here
 	return convertCommits(commits...), nil
 }

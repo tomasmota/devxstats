@@ -20,12 +20,13 @@ type octopusClient struct {
 }
 
 func NewOctopusClient(config *OctopusConfig) (*octopusClient, error) {
-	url, err := url.Parse(config.BaseUrl)
+	_, err := url.Parse(config.BaseUrl)
 	if err != nil {
 		return nil, fmt.Errorf("an error occured while parsing octoups url: %v", err)
 	}
 
-	c, err := od.NewClient(nil, url, config.Token, "")
+	// c, err := od.NewClient(nil, url, config.Token, "")
+	c := &od.Client{} // TODO: replace by real client once calling the real can load apikey from config
 	if err != nil {
 		log.Fatalf("error creating octopus client: %v", err)
 	}

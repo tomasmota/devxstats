@@ -21,6 +21,7 @@ type githubClient struct {
 
 // Creates a new client from *GithubConfig
 func NewClient(config *GithubConfig) (*githubClient, error) {
+	fmt.Println("creating github client")
 	var c *scm.Client
 	var err error
 	if config.BaseUrl != "" {
@@ -42,13 +43,13 @@ func NewClient(config *GithubConfig) (*githubClient, error) {
 }
 
 func (githubClient) GetOpenPullRequests() ([]*model.PullRequest, error) {
-	fmt.Println("Fetching open pull requests")
+	fmt.Println("Fetching github open pull requests")
 	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
 	return convertPullRequests(prs...), nil
 }
 
 func (githubClient) GetCommits() ([]*model.Commit, error) {
-	fmt.Println("Fetching commits")
+	fmt.Println("Fetching github commits")
 	commits := []*scm.Commit{{}} // TODO: Fetch commits here
 	return convertCommits(commits...), nil
 }
