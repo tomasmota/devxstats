@@ -7,12 +7,10 @@ import (
 	"devxstats/internal/git"
 	"devxstats/server"
 	"devxstats/storage"
+	"flag"
 	"fmt"
-	"log"
-	"os"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/sethvargo/go-envconfig"
 )
 
@@ -30,20 +28,28 @@ func syncSources(c config.AppConfig) {
 
 func main() {
 	ctx := context.Background()
+	// env := os.Getenv("ENVIRONMENT")
+	// if env == "dev" {
+	// 	godotenv.Load()
+	// }
 
-	env := os.Getenv("ENVIRONMENT")
-	if env == "dev" {
-		godotenv.Load()
+	c := &config.AppConfig{}
+	if err := envconfig.Process(ctx, c); err != nil {
+		panic(fmt.Errorf("error parsing environment variables into config: %v", err))
 	}
+	var testb bool
+	flag.BoolVar(&testb, "github", false, "Set to true to enable github source")
+	flag.BoolVar(&c.Enabled, "github", false, "Set to true to enable github source")
+	fmt.Println("after flag")
+	// flag.BoolVar(c.Git.Bitbucket.Enabled, "bitbucket", false, "Set to true to enable bitbucket source")
+	// flag.BoolVar(c.Cd.Octopus.Enabled, "octopus", false, "Set to true to enable octopus source")
+	flag.Parse()
+	fmt.Println("after parse")
 
-	var c config.AppConfig
-	if err := envconfig.Process(ctx, &c); err != nil {
-		log.Fatal(err)
-	}
 	app := &server.App{}
 
 	storage.InitializeDB(ctx, c.Db)
-	go syncSources(c)
+	go syncSources(*c)
 	app.InitializeRoutes()
 	app.Run(fmt.Sprintf(":%d", c.Port))
 }

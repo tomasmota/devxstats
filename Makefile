@@ -1,4 +1,7 @@
 run:
+	pack build devxstats && docker-compose up
+
+run-local:
 	ENVIRONMENT='dev' go run main.go
 
 build:

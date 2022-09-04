@@ -8,7 +8,8 @@ services:
       - PORT=8080
       - DB_HOST=db
     command:
-      - -github 
-      - -bitbucket
+      - --github 
+      # - --bitbucket
+      # - --octopus
   db:
     image: mongo

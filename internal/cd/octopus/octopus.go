@@ -20,6 +20,7 @@ type octopusClient struct {
 }
 
 func NewOctopusClient(config *OctopusConfig) (*octopusClient, error) {
+	fmt.Println("creating octopus client")
 	_, err := url.Parse(config.BaseUrl)
 	if err != nil {
 		return nil, fmt.Errorf("an error occured while parsing octoups url: %v", err)

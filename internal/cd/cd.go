@@ -16,15 +16,17 @@ type CdClient interface {
 
 func NewCdSyncer(c *config.CdConfig) *CdSyncer {
 	syncer := &CdSyncer{}
-	oc, err := octopus.NewOctopusClient(
-		&octopus.OctopusConfig{
-			BaseUrl: c.Octopus.Url,
-			Token:   c.Octopus.Token,
-		})
-	if err != nil {
-		panic(err)
+	if *c.Octopus.Enabled {
+		oc, err := octopus.NewOctopusClient(
+			&octopus.OctopusConfig{
+				BaseUrl: c.Octopus.Url,
+				Token:   c.Octopus.Token,
+			})
+		if err != nil {
+			panic(err)
+		}
+		syncer.sources = append(syncer.sources, oc)
 	}
-	syncer.sources = append(syncer.sources, oc)
 
 	return syncer
 }
