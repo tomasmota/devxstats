@@ -1,5 +1,5 @@
 run:
-	go run main.go
+	ENVIRONMENT='dev' go run main.go
 
 build:
 	go build -o bin/devxstats

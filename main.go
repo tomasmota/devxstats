@@ -9,8 +9,10 @@ import (
 	"devxstats/storage"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/sethvargo/go-envconfig"
 )
 
@@ -28,6 +30,12 @@ func syncSources(c config.AppConfig) {
 
 func main() {
 	ctx := context.Background()
+
+	env := os.Getenv("ENVIRONMENT")
+	if env == "dev" {
+		godotenv.Load()
+	}
+
 	var c config.AppConfig
 	if err := envconfig.Process(ctx, &c); err != nil {
 		log.Fatal(err)
