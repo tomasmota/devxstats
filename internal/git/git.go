@@ -1,6 +1,7 @@
 package git
 
 import (
+	"devxstats/internal/config"
 	"devxstats/internal/git/bitbucket"
 	"devxstats/internal/git/github"
 	"devxstats/model"
@@ -15,7 +16,7 @@ type GitClient interface {
 	GetOpenPullRequests() ([]*model.PullRequest, error)
 }
 
-func NewGitSyncer( /*configuration of sources will somehow get injected into this method*/ ) *GitSyncer {
+func NewGitSyncer(c *config.GitConfig) *GitSyncer {
 	syncer := &GitSyncer{}
 	// Add sources based on configuration
 	bc, err := bitbucket.NewBitbucketClient("https://dcgit.dac.local")
@@ -24,11 +25,16 @@ func NewGitSyncer( /*configuration of sources will somehow get injected into thi
 	}
 	syncer.sources = append(syncer.sources, bc)
 
-	gc, err := github.NewGithubClient("https://github.com")
+	githubClient, err := github.NewClient(
+		&github.GithubConfig{
+			BaseUrl: c.Github.Url,
+			Token:   c.Github.Token,
+		})
 	if err != nil {
 		panic(err)
 	}
-	syncer.sources = append(syncer.sources, gc)
+
+	syncer.sources = append(syncer.sources, githubClient)
 
 	return syncer
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/drone/go-scm/scm/driver/stash"
 )
 
+const defaultBaseUrl string = "https://bitbucket.example.com/rest/api"
+
 type bitbucketClient struct {
 	Client *scm.Client
 }

@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"devxstats/internal/config"
 	"devxstats/model"
 	"fmt"
 	"time"
@@ -20,10 +21,10 @@ type storeImpl struct {
 	db *mongo.Client
 }
 
-func InitializeDB(dbUri string) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+func InitializeDB(ctx context.Context, c *config.DbConfig) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(dbUri))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(fmt.Sprintf("mongodb://%v:%v", c.Host, c.Port)))
 	if err != nil {
 		panic(fmt.Errorf("an error occured while creating database connection: %v", err))
 	}

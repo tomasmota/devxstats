@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"devxstats/internal/cd"
+	"devxstats/internal/config"
 	"devxstats/internal/git"
 	"devxstats/server"
 	"devxstats/storage"
@@ -13,32 +14,28 @@ import (
 	"github.com/sethvargo/go-envconfig"
 )
 
-type AppConfig struct {
-	Port  int    `env:"PORT"`
-	DbUri string `env:"DB_URI"`
-}
-
-func syncSources() {
-	git := git.NewGitSyncer()
-	cd := cd.NewCdSyncer()
+// Fetches events from all sources and stores them on a loop
+func syncSources(c config.AppConfig) {
+	git := git.NewGitSyncer(c.Git)
+	cd := cd.NewCdSyncer(c.Cd)
 	for {
 		fmt.Println("\n---- Syncing Sources ----")
 		git.Sync()
 		cd.Sync()
-		time.Sleep(1000 * time.Millisecond)
+		time.Sleep(5000 * time.Millisecond)
 	}
 }
 
 func main() {
 	ctx := context.Background()
-	var c AppConfig
+	var c config.AppConfig
 	if err := envconfig.Process(ctx, &c); err != nil {
 		log.Fatal(err)
 	}
 	app := &server.App{}
 
-	storage.InitializeDB(c.DbUri)
-	go syncSources()
+	storage.InitializeDB(ctx, c.Db)
+	go syncSources(c)
 	app.InitializeRoutes()
 	app.Run(fmt.Sprintf(":%d", c.Port))
 }

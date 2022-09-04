@@ -2,6 +2,7 @@ package cd
 
 import (
 	"devxstats/internal/cd/octopus"
+	"devxstats/internal/config"
 	"devxstats/model"
 )
 
@@ -13,9 +14,9 @@ type CdClient interface {
 	GetDeployments() ([]*model.Deployment, error)
 }
 
-func NewCdSyncer( /*configuration of sources will somehow get injected into this method*/ ) *CdSyncer {
+func NewCdSyncer(c *config.CdConfig) *CdSyncer {
 	syncer := &CdSyncer{}
-	oc, err := octopus.NewOctopusClient("octopus.com")
+	oc, err := octopus.NewOctopusClient(c.Octopus.Url)
 	if err != nil {
 		panic(err)
 	}

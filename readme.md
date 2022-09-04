@@ -8,6 +8,7 @@ TODO:
 - restructure storage package to mirror sources structure
 - use drone/go-scm to interact with git sources
 - make envs required
+- document public methods
 
 
 # Supported data sources
