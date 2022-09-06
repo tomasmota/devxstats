@@ -7,6 +7,10 @@ services:
     environment:
       - PORT=8080
       - DB_HOST=db
+    command:
+      # - --github
+      - --bitbucket
+      # - --octopus
   db:
     image: mongo
     logging:

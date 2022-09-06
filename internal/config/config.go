@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"flag"
 	"fmt"
 
 	"github.com/sethvargo/go-envconfig"
@@ -47,8 +48,15 @@ func Load(ctx context.Context) *AppConfig {
 	if err := envconfig.Process(ctx, c); err != nil {
 		panic(fmt.Errorf("error parsing environment variables into config: %v", err))
 	}
-	c.Cd.Octopus.Enabled = true
-	c.Git.Bitbucket.Enabled = false
-	c.Git.Github.Enabled = true
+
+	githubF := flag.Bool("github", false, "Set to true to enable github source")
+	bitbucketF := flag.Bool("bitbucket", false, "Set to true to enable bitbucket source")
+	octopusF := flag.Bool("octopus", false, "Set to true to enable octopus source")
+
+	flag.Parse()
+	c.Git.Github.Enabled = *githubF
+	c.Git.Bitbucket.Enabled = *bitbucketF
+	c.Cd.Octopus.Enabled = *octopusF
+
 	return c
 }
