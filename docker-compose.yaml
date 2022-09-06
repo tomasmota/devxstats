@@ -1,14 +1,14 @@
 version: "3.9"
 services:
   devxstats:
-    image: devxstats
+    build: .
     ports:
       - "8080:8080"
     environment:
       - PORT=8080
       - DB_HOST=db
-    command:
-      - --github 
+      # command:
+      # - --github
       # - --bitbucket
       # - --octopus
   db:
