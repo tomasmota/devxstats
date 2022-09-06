@@ -1,6 +1,7 @@
 package cd
 
 import (
+	"context"
 	"devxstats/internal/cd/octopus"
 	"devxstats/internal/config"
 	"devxstats/model"
@@ -11,7 +12,7 @@ type CdSyncer struct {
 }
 
 type CdClient interface {
-	GetDeployments() ([]*model.Deployment, error)
+	GetDeployments(ctx context.Context) ([]*model.Deployment, error)
 }
 
 func NewCdSyncer(c *config.CdConfig) *CdSyncer {
@@ -31,9 +32,9 @@ func NewCdSyncer(c *config.CdConfig) *CdSyncer {
 	return syncer
 }
 
-func (git *CdSyncer) Sync() error {
+func (git *CdSyncer) Sync(ctx context.Context) error {
 	for _, source := range git.sources {
-		_, err := source.GetDeployments()
+		_, err := source.GetDeployments(ctx)
 		if err != nil {
 			return err
 		}

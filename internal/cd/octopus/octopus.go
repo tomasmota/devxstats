@@ -1,6 +1,7 @@
 package octopus
 
 import (
+	"context"
 	"devxstats/model"
 	"fmt"
 	"log"
@@ -35,7 +36,7 @@ func NewOctopusClient(config *OctopusConfig) (*octopusClient, error) {
 	return &octopusClient{Client: c}, nil
 }
 
-func (octopusClient) GetDeployments() ([]*model.Deployment, error) {
+func (octopusClient) GetDeployments(ctx context.Context) ([]*model.Deployment, error) {
 	fmt.Println("Fetching deployments")
 	d := []*octopusdeploy.Deployment{{}} // TODO: Fetch commits here
 	return convertDeployments(d...), nil

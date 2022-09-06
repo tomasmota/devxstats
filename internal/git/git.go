@@ -1,6 +1,7 @@
 package git
 
 import (
+	"context"
 	"devxstats/internal/config"
 	"devxstats/internal/git/bitbucket"
 	"devxstats/internal/git/github"
@@ -12,8 +13,8 @@ type GitSyncer struct {
 }
 
 type GitClient interface {
-	GetCommits() ([]*model.Commit, error)
-	GetOpenPullRequests() ([]*model.PullRequest, error)
+	GetCommits(ctx context.Context) ([]*model.Commit, error)
+	GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error)
 }
 
 func NewGitSyncer(c *config.GitConfig) *GitSyncer {
@@ -44,16 +45,16 @@ func NewGitSyncer(c *config.GitConfig) *GitSyncer {
 	return syncer
 }
 
-func (git *GitSyncer) Sync() error {
+func (git *GitSyncer) Sync(ctx context.Context) error {
 	for _, source := range git.sources {
-		_, err := source.GetCommits()
+		_, err := source.GetCommits(ctx)
 		if err != nil {
 			return err
 		}
 
 		// TODO: Persist Commits
 
-		_, err = source.GetOpenPullRequests()
+		_, err = source.GetOpenPullRequests(ctx)
 		if err != nil {
 			return err
 		}

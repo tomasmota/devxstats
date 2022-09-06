@@ -1,6 +1,7 @@
 package bitbucket
 
 import (
+	"context"
 	"devxstats/model"
 	"fmt"
 	"net/http"
@@ -20,7 +21,7 @@ type bitbucketClient struct {
 }
 
 func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
-	fmt.Println("creating bitbucket client")
+	fmt.Println("creating bitbucket client, endpoint: ", config.BaseUrl)
 
 	c, err := stash.New(config.BaseUrl)
 	if err != nil {
@@ -36,13 +37,13 @@ func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
 	return &bitbucketClient{Client: c}, nil
 }
 
-func (c *bitbucketClient) GetOpenPullRequests() ([]*model.PullRequest, error) {
+func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
 	fmt.Println("Fetching bitbucket open pull requests")
 	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
 	return convertPullRequests(prs...), nil
 }
 
-func (c *bitbucketClient) GetCommits() ([]*model.Commit, error) {
+func (c *bitbucketClient) GetCommits(ctx context.Context) ([]*model.Commit, error) {
 	fmt.Println("Fetching bitbucket commits")
 	commits := []*scm.Commit{{}} // TODO: Fetch commits here
 	return convertCommits(commits...), nil

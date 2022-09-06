@@ -1,5 +1,7 @@
 package source
 
+import "context"
+
 type Syncer interface {
-	Sync() error
+	Sync(context.Context) error
 }

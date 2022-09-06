@@ -7,9 +7,11 @@ services:
     environment:
       - PORT=8080
       - DB_HOST=db
+      - BITBUCKET_URL=${BITBUCKET_URL}
+      - BITBUCKET_TOKEN=${BITBUCKET_TOKEN}
     command:
-      # - --github
       - --bitbucket
+      # - --github
       # - --octopus
   db:
     image: mongo
