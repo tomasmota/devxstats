@@ -18,8 +18,7 @@ type GitClient interface {
 
 func NewGitSyncer(c *config.GitConfig) *GitSyncer {
 	syncer := &GitSyncer{}
-	if *c.Bitbucket.Enabled {
-		// Add sources based on configuration
+	if c.Bitbucket.Enabled {
 		bc, err := bitbucket.NewBitbucketClient(
 			&bitbucket.BitbucketConfig{
 				BaseUrl: c.Bitbucket.Url,
@@ -30,7 +29,7 @@ func NewGitSyncer(c *config.GitConfig) *GitSyncer {
 		}
 		syncer.sources = append(syncer.sources, bc)
 	}
-	if *c.Github.Enabled {
+	if c.Github.Enabled {
 		githubClient, err := github.NewClient(
 			&github.GithubConfig{
 				BaseUrl: c.Github.Url,

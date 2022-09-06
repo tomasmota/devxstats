@@ -10,8 +10,6 @@ import (
 	"flag"
 	"fmt"
 	"time"
-
-	"github.com/sethvargo/go-envconfig"
 )
 
 // Fetches events from all sources and stores them on a loop
@@ -33,18 +31,15 @@ func main() {
 	// 	godotenv.Load()
 	// }
 
-	c := &config.AppConfig{}
-	if err := envconfig.Process(ctx, c); err != nil {
-		panic(fmt.Errorf("error parsing environment variables into config: %v", err))
-	}
-	var testb bool
-	flag.BoolVar(&testb, "github", false, "Set to true to enable github source")
-	flag.BoolVar(&c.Enabled, "github", false, "Set to true to enable github source")
-	fmt.Println("after flag")
+	c := config.Load(ctx)
+
+	// var testb bool
+	// flag.BoolVar(&testb, "github", false, "Set to true to enable github source")
+	// flag.BoolVar(&c.Enabled, "github", false, "Set to true to enable github source")
+	// fmt.Println("after flag")
 	// flag.BoolVar(c.Git.Bitbucket.Enabled, "bitbucket", false, "Set to true to enable bitbucket source")
 	// flag.BoolVar(c.Cd.Octopus.Enabled, "octopus", false, "Set to true to enable octopus source")
 	flag.Parse()
-	fmt.Println("after parse")
 
 	app := &server.App{}
 

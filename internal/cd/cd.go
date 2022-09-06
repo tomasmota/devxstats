@@ -16,7 +16,7 @@ type CdClient interface {
 
 func NewCdSyncer(c *config.CdConfig) *CdSyncer {
 	syncer := &CdSyncer{}
-	if *c.Octopus.Enabled {
+	if c.Octopus.Enabled {
 		oc, err := octopus.NewOctopusClient(
 			&octopus.OctopusConfig{
 				BaseUrl: c.Octopus.Url,
