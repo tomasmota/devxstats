@@ -17,8 +17,14 @@ func syncSources(ctx context.Context, c config.AppConfig) {
 	cd := cd.NewCdSyncer(c.Cd)
 	for {
 		fmt.Println("\n---- Syncing Sources ----")
-		git.Sync(ctx)
-		cd.Sync(ctx)
+		err := git.Sync(ctx)
+		if err != nil {
+			panic(fmt.Errorf("error syncing git sources: %v", err))
+		}
+		err = cd.Sync(ctx)
+		if err != nil {
+			panic(fmt.Errorf("error syncing cd sources: %v", err))
+		}
 		time.Sleep(5000 * time.Millisecond)
 	}
 }
