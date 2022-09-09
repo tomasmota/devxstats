@@ -1,2 +1,4 @@
 bin
 .env
+local
+docker-compose.yaml

@@ -1,12 +1,8 @@
-run:
-	pack build devxstats && docker-compose up
-
-run-local:
-	ENVIRONMENT='dev' go run main.go
-
+image:
+	docker build . -t devxstats
 build:
-	go build -o bin/devxstats
+	go build -o bin/devxstats cmd/devxstats/main.go
 
 install:
 	@echo ">> Installing devxstats locally"
-	go install .
+	go install cmd/devxstats/main.go
