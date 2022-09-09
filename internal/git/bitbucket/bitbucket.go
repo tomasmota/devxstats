@@ -29,7 +29,7 @@ func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
 	}
 
 	c.Client = &http.Client{
-		Transport: &transport.PrivateToken{
+		Transport: &transport.BearerToken{
 			Token: config.Token,
 		},
 	}
@@ -39,6 +39,36 @@ func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
 
 func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
 	fmt.Println("Fetching bitbucket open pull requests")
+
+	opts := scm.ListOptions{
+		Page: 1,
+		Size: 300,
+	}
+
+	repos, res, err := c.Client.Repositories.List(ctx, opts)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching repositories: %v", err)
+	}
+	if res.Status != 200 {
+		return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
+	}
+
+	fmt.Printf("found %d repos\n", len(repos))
+	var count int
+	for _, r := range repos {
+		prs, res, err := c.Client.PullRequests.List(ctx, fmt.Sprintf("%v/%v", r.Namespace, r.Name), scm.PullRequestListOptions{Open: true})
+		if err != nil {
+			return nil, fmt.Errorf("error fetching repositories: %v", err)
+		}
+		if res.Status != 200 {
+			return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
+		}
+
+		fmt.Printf("%v open pull requests in repo %v\n", len(prs), r.Name)
+		count += len(prs)
+	}
+	fmt.Printf("found %d open pull requests\n", count)
+
 	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
 	return convertPullRequests(prs...), nil
 }
