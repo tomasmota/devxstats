@@ -1,5 +1,6 @@
 image:
 	docker build . -t devxstats
+
 build:
 	go build -o bin/devxstats cmd/devxstats/main.go
 
