@@ -35,7 +35,7 @@ func NewClient(config *GithubConfig) (*githubClient, error) {
 	}
 
 	c.Client = &http.Client{
-		Transport: &transport.PrivateToken{
+		Transport: &transport.BearerToken{
 			Token: config.Token,
 		},
 	}
@@ -43,14 +43,15 @@ func NewClient(config *GithubConfig) (*githubClient, error) {
 	return &githubClient{Client: c}, nil
 }
 
-func (githubClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
+func (c *githubClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
 	fmt.Println("Fetching github open pull requests")
 	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
 	return convertPullRequests(prs...), nil
 }
 
-func (githubClient) GetCommits(ctx context.Context) ([]*model.Commit, error) {
+func (c *githubClient) GetCommits(ctx context.Context) ([]*model.Commit, error) {
 	fmt.Println("Fetching github commits")
+
 	commits := []*scm.Commit{{}} // TODO: Fetch commits here
 	return convertCommits(commits...), nil
 }
