@@ -52,6 +52,24 @@ func (c *githubClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRe
 func (c *githubClient) GetCommits(ctx context.Context) ([]*model.Commit, error) {
 	fmt.Println("Fetching github commits")
 
+	repos, res, err := c.Client.Repositories.List(ctx, scm.ListOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("error fetching repositories: %v", err)
+	}
+	if res.Status != 200 {
+		return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
+	}
+	for _, r := range repos {
+		commits, res, err := c.Client.Git.ListCommits(ctx, fmt.Sprintf("%v/%v", r.Namespace, r.Name), scm.CommitListOptions{Size: 1000})
+		if err != nil {
+			return nil, fmt.Errorf("error fetching repositories: %v", err)
+		}
+		if res.Status != 200 {
+			return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
+		}
+		fmt.Printf("repo %v contains %v commits\n", fmt.Sprintf("%v/%v", r.Namespace, r.Name), len(commits))
+	}
+
 	commits := []*scm.Commit{{}} // TODO: Fetch commits here
 	return convertCommits(commits...), nil
 }
