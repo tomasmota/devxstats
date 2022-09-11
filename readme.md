@@ -9,6 +9,7 @@ Service that fetches and stores developer experience related metrics from differ
 - use drone/go-scm to interact with git sources
 - make envs required
 - document public methods
+- handle pagination
 
 ## Bitbucket todos
 - go-scm does not support listing projects, add that capability
