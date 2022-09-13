@@ -1,15 +1,16 @@
-Service that fetches and stores developer experience related metrics from different sources and makes them available through an api
+# Devxstats
+⚠️ Warning: Active Development ⚠️
+ 
+Service that fetches and stores developer experience related metrics from different sources and makes them available through a rest api
 
 # TODO:
 - define a separate model for each client communicating to a source
 - decide on database
-- add application configuration file
-- define the code for a specific source
 - restructure storage package to mirror sources structure
-- use drone/go-scm to interact with git sources
-- make envs required
 - document public methods
 - handle pagination
+- make different syncs run in paralel (e.g. PullRequests and repos)
+- different entities can be synced in different frequencies, such as repos vs commits
 
 ## Bitbucket todos
 - go-scm does not support listing projects, add that capability
