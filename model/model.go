@@ -10,7 +10,6 @@ type Build struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	StartTime time.Time          `bson:"starttime,omitempty"`
 	EndTime   time.Time          `bson:"endtime,omitempty"`
-	Team      string             `bson:"team,omitempty"`
 	System    string             `bson:"system,omitempty"` // e.g. Tekton, Teamcity
 	Group     string             `bson:"group,omitempty"`  // tekton namespace, teamcity high-level project
 	Project   string             `bson:"repo,omitempty"`   // tekton pipeline, teamcity project
