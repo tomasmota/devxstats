@@ -68,7 +68,10 @@ func (git *GitSyncer) Sync(ctx context.Context) error {
 			return err
 		}
 
-		storage.DBStore.AddRepos(ctx, repos)
+		err = storage.DBStore.AddRepos(ctx, repos)
+		if err != nil {
+			return err
+		}
 		// TODO: Persist Repositories
 	}
 	return nil
