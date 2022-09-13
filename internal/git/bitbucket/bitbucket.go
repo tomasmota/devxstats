@@ -20,6 +20,8 @@ type bitbucketClient struct {
 	Client *scm.Client
 }
 
+const system = "bitbucket"
+
 func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
 	fmt.Println("creating bitbucket client, endpoint: ", config.BaseUrl)
 
@@ -44,6 +46,7 @@ func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.Pul
 	page := 1
 
 	for {
+		fmt.Println("repos loop in prs")
 		opts := scm.ListOptions{
 			Page: page,
 			Size: 1000,
@@ -90,6 +93,35 @@ func (c *bitbucketClient) GetCommits(ctx context.Context) ([]*model.Commit, erro
 	return convertCommits(commits...), nil
 }
 
+func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repository, error) {
+	fmt.Println("Fetching bitbucket repositories")
+	var allRepos []*scm.Repository
+	page := 1
+
+	for {
+		opts := scm.ListOptions{
+			Page: page,
+			Size: 100,
+		}
+		repos, res, err := c.Client.Repositories.List(ctx, opts)
+		if err != nil {
+			return nil, fmt.Errorf("error fetching repositories: %v", err)
+		}
+		if res.Status != 200 {
+			return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
+		}
+
+		page = res.Page.Next
+		allRepos = append(allRepos, repos...)
+
+		if res.Page.Next == 0 {
+			break
+		}
+	}
+	fmt.Printf("found %v repos\n", len(allRepos))
+	return convertRepositories(allRepos...), nil
+}
+
 func convertPullRequests(from ...*scm.PullRequest) []*model.PullRequest {
 	// TODO: Implement
 	return []*model.PullRequest{{}}
@@ -98,4 +130,17 @@ func convertPullRequests(from ...*scm.PullRequest) []*model.PullRequest {
 func convertCommits(from ...*scm.Commit) []*model.Commit {
 	// TODO: Implement
 	return []*model.Commit{{}}
+}
+
+func convertRepositories(from ...*scm.Repository) []*model.Repository {
+	// TODO: Implement
+	var to []*model.Repository
+	for _, r := range from {
+		to = append(to, &model.Repository{
+			System: system,
+			Group:  r.Namespace,
+			Name:   r.Name,
+		})
+	}
+	return to
 }

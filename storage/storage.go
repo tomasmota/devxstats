@@ -14,7 +14,9 @@ import (
 
 type store interface {
 	AddCommits([]interface{}) error
-	GetCommits(projectName string) ([]model.Commit, error)
+	GetCommits(string) ([]model.Commit, error)
+	AddRepos(context.Context, []*model.Repository) error
+	GetRepos(string) ([]model.Repository, error)
 }
 
 type storeImpl struct {
