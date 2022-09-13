@@ -18,12 +18,18 @@ type Build struct {
 	Succeeded bool               `bson:"succeeded,omitempty"`
 }
 
+type Repository struct {
+	ID     primitive.ObjectID `bson:"_id,omitempty"`
+	System string             `bson:"system,omitempty"` // e.g. Github, Bitbucket
+	Group  string             `bson:"group,omitempty"`  // Github org, Bitbucket project
+	Name   string             `bson:"repo,omitempty"`
+}
+
 type PullRequest struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	OpenTime  time.Time          `bson:"opentime,omitempty"`
 	CloseTime time.Time          `bson:"closetime,omitempty"`
 	Status    time.Time          `bson:"status,omitempty"`
-	Team      string             `bson:"team,omitempty"`
 	System    string             `bson:"system,omitempty"` // e.g. Github, Bitbucket
 	Group     string             `bson:"group,omitempty"`  // Github org, Bitbucket project
 	Repo      string             `bson:"repo,omitempty"`
@@ -33,7 +39,6 @@ type PullRequest struct {
 type Commit struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	Timestamp time.Time          `bson:"timestamp,omitempty"`
-	Team      string             `bson:"team,omitempty"`
 	System    string             `bson:"system,omitempty"` // e.g. Github, Bitbucket
 	Group     string             `bson:"group,omitempty"`  // Github org, Bitbucket project
 	Repo      string             `bson:"repo,omitempty"`
@@ -44,7 +49,6 @@ type Deployment struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	StartTime time.Time          `bson:"starttime,omitempty"`
 	EndTime   time.Time          `bson:"endtime,omitempty"`
-	Team      string             `bson:"team,omitempty"`
 	System    string             `bson:"system,omitempty"`
 	Group     string             `bson:"group,omitempty"`
 	Project   string             `bson:"project,omitempty"`
