@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -37,6 +38,19 @@ func InitializeDB(ctx context.Context, c *config.DbConfig) {
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		panic(fmt.Errorf("an error occured while pinging database: %v", err))
+	}
+
+	model := mongo.IndexModel{
+		Options: options.Index().SetUnique(true),
+		Keys: bson.D{
+			{Key: "System", Value: 1},
+			{Key: "Group", Value: 1},
+			{Key: "Name", Value: 1},
+		},
+	}
+	_, err = client.Database("devxstats").Collection("repos").Indexes().CreateOne(ctx, model)
+	if err != nil {
+		panic(fmt.Errorf("error creating repos index: %v", err))
 	}
 
 	initStore(&storeImpl{db: client})

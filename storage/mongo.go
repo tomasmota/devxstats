@@ -6,48 +6,38 @@ import (
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const collection = "repos"
+const (
+	reposCollection   = "repos"
+	commitsCollection = "commits"
+)
 
 func (storeImpl *storeImpl) AddRepos(ctx context.Context, repos []*model.Repository) error {
-	// iRepos := make([]interface{}, len(repos))
+	iRepos := make([]interface{}, len(repos))
 
-	// for i := range repos {
-	// 	iRepos[i] = repos[i]
-	// }
-	collection := storeImpl.db.Database("devxstats").Collection(collection)
+	for i := range repos {
+		repos[i].ID = primitive.NewObjectID()
+		iRepos[i] = repos[i]
+	}
+	collection := storeImpl.db.Database("devxstats").Collection(reposCollection)
 	fmt.Printf("Inserting %v repos\n", len(repos))
 
-	var ops []mongo.WriteModel
-	for _, r := range repos {
-		var ir interface{} = r
-		op := mongo.NewInsertOneModel()
-		op.SetDocument(ir)
-		// op.SetFilter(bson.M{"System": r.System, "Group": r.Group, "Name": r.Name})
-		// op.SetUpdate(ir)
-		// op.SetUpsert(true)
-		ops = append(ops, op)
-	}
-
-	opts := options.BulkWriteOptions{}
-	opts.SetOrdered(true)
-	res, err := collection.BulkWrite(ctx, ops, &opts)
-
-	// res, err := reposCollection.UpdateMany(ctx, bson.M{}, iRepos, &options.UpdateOptions{Upsert: &upsert})
+	// _, err := collection.InsertOne(ctx, iRepos[1], &options.InsertOneOptions{})
+	res, err := collection.InsertMany(ctx, iRepos, &options.InsertManyOptions{})
 	if err != nil {
-		return fmt.Errorf("error bulk inserting repos: %v", err)
+
+		fmt.Println(err)
+		// return fmt.Errorf("error inserting repos: %v", err)
 	}
-	fmt.Printf("%v repos stored", res.ModifiedCount)
-	fmt.Printf("%v repos already matched", res.MatchedCount)
-	// _, err := reposCollection.InsertMany(ctx, iRepos, &options.InsertManyOptions{})
+	fmt.Printf("inserted %v repos into db\n", len(res.InsertedIDs))
 	return nil
 }
 
 func (storeImpl *storeImpl) GetRepos(group string) ([]model.Repository, error) {
-	reposCollection := storeImpl.db.Database("devxstats").Collection(collection)
+	reposCollection := storeImpl.db.Database("devxstats").Collection(reposCollection)
 	fmt.Printf("fetching repos in group: %v\n", group)
 
 	var repos []model.Repository
@@ -64,7 +54,7 @@ func (storeImpl *storeImpl) GetRepos(group string) ([]model.Repository, error) {
 }
 
 func (storeImpl *storeImpl) AddCommits(commits []interface{}) error {
-	commitsCollection := storeImpl.db.Database("devxstats").Collection("commits")
+	commitsCollection := storeImpl.db.Database("devxstats").Collection(commitsCollection)
 
 	_, err := commitsCollection.InsertMany(context.TODO(), commits, &options.InsertManyOptions{})
 	if err != nil {
@@ -74,7 +64,7 @@ func (storeImpl *storeImpl) AddCommits(commits []interface{}) error {
 }
 
 func (storeImpl *storeImpl) GetCommits(group string) ([]model.Commit, error) {
-	commitsCollection := storeImpl.db.Database("devxstats").Collection("commits")
+	commitsCollection := storeImpl.db.Database("devxstats").Collection(commitsCollection)
 
 	var commits []model.Commit
 	cursor, err := commitsCollection.Find(context.TODO(), bson.M{"group": group})
