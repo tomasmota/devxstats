@@ -133,7 +133,6 @@ func convertCommits(from ...*scm.Commit) []*model.Commit {
 }
 
 func convertRepositories(from ...*scm.Repository) []*model.Repository {
-	// TODO: Implement
 	var to []*model.Repository
 	for _, r := range from {
 		to = append(to, &model.Repository{

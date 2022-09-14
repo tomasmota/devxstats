@@ -24,10 +24,11 @@ func (storeImpl *storeImpl) AddRepos(ctx context.Context, repos []*model.Reposit
 	var ops []mongo.WriteModel
 	for _, r := range repos {
 		var ir interface{} = r
-		op := mongo.NewUpdateOneModel()
-		op.SetFilter(bson.M{"System": r.System, "Group": r.Group, "Name": r.Name})
-		op.SetUpdate(ir)
-		op.SetUpsert(true)
+		op := mongo.NewInsertOneModel()
+		op.SetDocument(ir)
+		// op.SetFilter(bson.M{"System": r.System, "Group": r.Group, "Name": r.Name})
+		// op.SetUpdate(ir)
+		// op.SetUpsert(true)
 		ops = append(ops, op)
 	}
 
@@ -60,4 +61,30 @@ func (storeImpl *storeImpl) GetRepos(group string) ([]model.Repository, error) {
 	}
 
 	return repos, nil
+}
+
+func (storeImpl *storeImpl) AddCommits(commits []interface{}) error {
+	commitsCollection := storeImpl.db.Database("devxstats").Collection("commits")
+
+	_, err := commitsCollection.InsertMany(context.TODO(), commits, &options.InsertManyOptions{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (storeImpl *storeImpl) GetCommits(group string) ([]model.Commit, error) {
+	commitsCollection := storeImpl.db.Database("devxstats").Collection("commits")
+
+	var commits []model.Commit
+	cursor, err := commitsCollection.Find(context.TODO(), bson.M{"group": group})
+	if err != nil {
+		return nil, err
+	}
+
+	if err = cursor.All(context.TODO(), &commits); err != nil {
+		return nil, err
+	}
+
+	return commits, nil
 }
