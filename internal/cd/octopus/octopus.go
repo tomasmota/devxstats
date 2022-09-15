@@ -2,6 +2,7 @@ package octopus
 
 import (
 	"context"
+	"devxstats/internal/util"
 	"devxstats/model"
 	"fmt"
 	"log"
@@ -22,13 +23,12 @@ type octopusClient struct {
 
 func NewOctopusClient(config *OctopusConfig) (*octopusClient, error) {
 	fmt.Println("creating octopus client")
-	_, err := url.Parse(config.BaseUrl)
+	url, err := url.Parse(config.BaseUrl)
 	if err != nil {
 		return nil, fmt.Errorf("an error occured while parsing octoups url: %v", err)
 	}
 
-	// c, err := od.NewClient(nil, url, config.Token, "")
-	c := &od.Client{} // TODO: replace by real client once calling the real can load apikey from config
+	c, err := od.NewClient(util.NewHttpClient(), url, config.Token, "")
 	if err != nil {
 		log.Fatalf("error creating octopus client: %v", err)
 	}

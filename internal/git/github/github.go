@@ -2,13 +2,12 @@ package github
 
 import (
 	"context"
+	"devxstats/internal/util"
 	"devxstats/model"
 	"fmt"
-	"net/http"
 
 	"github.com/drone/go-scm/scm"
 	"github.com/drone/go-scm/scm/driver/github"
-	"github.com/drone/go-scm/scm/transport"
 )
 
 type GithubConfig struct {
@@ -36,11 +35,7 @@ func NewClient(config *GithubConfig) (*githubClient, error) {
 		c = github.NewDefault()
 	}
 
-	c.Client = &http.Client{
-		Transport: &transport.BearerToken{
-			Token: config.Token,
-		},
-	}
+	c.Client = util.NewBearerHttpClient(config.Token)
 
 	return &githubClient{Client: c}, nil
 }

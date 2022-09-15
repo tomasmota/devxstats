@@ -4,11 +4,11 @@ import (
 	"context"
 	"devxstats/model"
 	"fmt"
-	"net/http"
+
+	"devxstats/internal/util"
 
 	"github.com/drone/go-scm/scm"
 	"github.com/drone/go-scm/scm/driver/stash"
-	"github.com/drone/go-scm/scm/transport"
 )
 
 type BitbucketConfig struct {
@@ -30,11 +30,7 @@ func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
 		return nil, fmt.Errorf("an error occured while creating bitbucket client: %v", err)
 	}
 
-	c.Client = &http.Client{
-		Transport: &transport.BearerToken{
-			Token: config.Token,
-		},
-	}
+	c.Client = util.NewBearerHttpClient(config.Token)
 
 	return &bitbucketClient{Client: c}, nil
 }

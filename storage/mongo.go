@@ -26,6 +26,7 @@ func (storeImpl *storeImpl) AddRepos(ctx context.Context, repos []*model.Reposit
 	collection := storeImpl.db.Database("devxstats").Collection(reposCollection)
 	fmt.Printf("inserting %v repos\n", len(repos))
 
+	var count int64 = 0
 	for _, r := range repos {
 		filter := bson.M{
 			"System": r.System,
@@ -33,13 +34,15 @@ func (storeImpl *storeImpl) AddRepos(ctx context.Context, repos []*model.Reposit
 			"Name":   r.Name,
 		}
 
-		_, err := collection.UpdateOne(ctx, filter, makeInsert(r), &options.UpdateOptions{Upsert: &upsert})
+		res, err := collection.UpdateOne(ctx, filter, makeInsert(r), &options.UpdateOptions{Upsert: &upsert})
 		if err != nil {
 			return fmt.Errorf("error inserting repo %v: %w", r.Name, err)
 		}
+
+		count += res.UpsertedCount
 	}
 
-	// print count of upserts here
+	fmt.Println("number of new repos: ", count)
 
 	return nil
 }
@@ -49,8 +52,7 @@ func (storeImpl *storeImpl) GetRepos(group string) ([]model.Repository, error) {
 	fmt.Printf("fetching repos in group: %v\n", group)
 
 	var repos []model.Repository
-	cursor, err := reposCollection.Find(context.TODO(), bson.M{})
-	// cursor, err := reposCollection.Find(context.TODO(), bson.M{"group": group})
+	cursor, err := reposCollection.Find(context.TODO(), bson.M{"group": group})
 	if err != nil {
 		return nil, err
 	}
