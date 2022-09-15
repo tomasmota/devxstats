@@ -15,24 +15,35 @@ const (
 	commitsCollection = "commits"
 )
 
-func (storeImpl *storeImpl) AddRepos(ctx context.Context, repos []*model.Repository) error {
-	iRepos := make([]interface{}, len(repos))
+var upsert = true
 
-	for i := range repos {
-		repos[i].ID = primitive.NewObjectID()
-		iRepos[i] = repos[i]
+func makeInsert(i interface{}) interface{} {
+	return bson.M{
+		"$setOnInsert": i,
 	}
+}
+
+func (storeImpl *storeImpl) AddRepos(ctx context.Context, repos []*model.Repository) error {
 	collection := storeImpl.db.Database("devxstats").Collection(reposCollection)
 	fmt.Printf("Inserting %v repos\n", len(repos))
 
-	// _, err := collection.InsertOne(ctx, iRepos[1], &options.InsertOneOptions{})
-	res, err := collection.InsertMany(ctx, iRepos, &options.InsertManyOptions{})
-	if err != nil {
+	for _, r := range repos {
 
-		fmt.Println(err)
-		// return fmt.Errorf("error inserting repos: %v", err)
+		r.ID = primitive.NewObjectID()
+		filter := bson.M{
+			"System": r.System,
+			"Group":  r.Group,
+			"Name":   r.Name,
+		}
+
+		_, err := collection.UpdateOne(ctx, filter, makeInsert(r), &options.UpdateOptions{Upsert: &upsert})
+		if err != nil {
+			return fmt.Errorf("error inserting repo %v: %w", r.Name, err)
+		}
 	}
-	fmt.Printf("inserted %v repos into db\n", len(res.InsertedIDs))
+
+	// print count of upserts here
+
 	return nil
 }
 
@@ -41,7 +52,8 @@ func (storeImpl *storeImpl) GetRepos(group string) ([]model.Repository, error) {
 	fmt.Printf("fetching repos in group: %v\n", group)
 
 	var repos []model.Repository
-	cursor, err := reposCollection.Find(context.TODO(), bson.M{"group": group})
+	cursor, err := reposCollection.Find(context.TODO(), bson.M{})
+	// cursor, err := reposCollection.Find(context.TODO(), bson.M{"group": group})
 	if err != nil {
 		return nil, err
 	}
