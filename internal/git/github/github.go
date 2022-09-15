@@ -50,19 +50,19 @@ func (c *githubClient) Name() string {
 }
 
 func (c *githubClient) GetRepositories(ctx context.Context) ([]*model.Repository, error) {
-	fmt.Println("Fetching github open pull requests")
+	fmt.Println("fetching github open pull requests")
 	repos := []*scm.Repository{{}} // TODO: fetch prs here
 	return convertRepositories(repos...), nil
 }
 
 func (c *githubClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
-	fmt.Println("Fetching github open pull requests")
+	fmt.Println("fetching github open pull requests")
 	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
 	return convertPullRequests(prs...), nil
 }
 
 func (c *githubClient) GetCommits(ctx context.Context) ([]*model.Commit, error) {
-	fmt.Println("Fetching github commits")
+	fmt.Println("fetching github commits")
 
 	repos, res, err := c.Client.Repositories.List(ctx, scm.ListOptions{})
 	if err != nil {

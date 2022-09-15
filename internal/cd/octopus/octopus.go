@@ -37,7 +37,7 @@ func NewOctopusClient(config *OctopusConfig) (*octopusClient, error) {
 }
 
 func (octopusClient) GetDeployments(ctx context.Context) ([]*model.Deployment, error) {
-	fmt.Println("Fetching deployments")
+	fmt.Println("fetching deployments")
 	d := []*octopusdeploy.Deployment{{}} // TODO: Fetch commits here
 	return convertDeployments(d...), nil
 }

@@ -44,7 +44,7 @@ func (c *bitbucketClient) Name() string {
 }
 
 func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
-	fmt.Println("Fetching bitbucket open pull requests")
+	fmt.Println("fetching bitbucket open pull requests")
 
 	var prCount, repoCount int
 	page := 1
@@ -92,13 +92,13 @@ func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.Pul
 }
 
 func (c *bitbucketClient) GetCommits(ctx context.Context) ([]*model.Commit, error) {
-	fmt.Println("Fetching bitbucket commits")
+	fmt.Println("fetching bitbucket commits")
 	commits := []*scm.Commit{{}} // TODO: Fetch commits here
 	return convertCommits(commits...), nil
 }
 
 func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repository, error) {
-	fmt.Println("Fetching bitbucket repositories")
+	fmt.Println("fetching bitbucket repositories")
 	var allRepos []*scm.Repository
 	page := 1
 

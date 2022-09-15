@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -25,11 +24,9 @@ func makeInsert(i interface{}) interface{} {
 
 func (storeImpl *storeImpl) AddRepos(ctx context.Context, repos []*model.Repository) error {
 	collection := storeImpl.db.Database("devxstats").Collection(reposCollection)
-	fmt.Printf("Inserting %v repos\n", len(repos))
+	fmt.Printf("inserting %v repos\n", len(repos))
 
 	for _, r := range repos {
-
-		r.ID = primitive.NewObjectID()
 		filter := bson.M{
 			"System": r.System,
 			"Group":  r.Group,
