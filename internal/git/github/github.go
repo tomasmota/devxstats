@@ -45,6 +45,10 @@ func NewClient(config *GithubConfig) (*githubClient, error) {
 	return &githubClient{Client: c}, nil
 }
 
+func (c *githubClient) Name() string {
+	return system
+}
+
 func (c *githubClient) GetRepositories(ctx context.Context) ([]*model.Repository, error) {
 	fmt.Println("Fetching github open pull requests")
 	repos := []*scm.Repository{{}} // TODO: fetch prs here

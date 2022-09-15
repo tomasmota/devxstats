@@ -7,6 +7,7 @@ import (
 	"devxstats/internal/git/github"
 	"devxstats/model"
 	"devxstats/storage"
+	"fmt"
 )
 
 type GitSyncer struct {
@@ -17,6 +18,7 @@ type GitClient interface {
 	GetCommits(ctx context.Context) ([]*model.Commit, error)
 	GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error)
 	GetRepositories(ctx context.Context) ([]*model.Repository, error)
+	Name() string
 }
 
 func NewGitSyncer(c *config.GitConfig) *GitSyncer {
@@ -63,6 +65,7 @@ func (git *GitSyncer) Sync(ctx context.Context) error {
 
 		// TODO: Persist PullRequests
 
+		// REPOS
 		repos, err := source.GetRepositories(ctx)
 		if err != nil {
 			return err
@@ -72,7 +75,7 @@ func (git *GitSyncer) Sync(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		// TODO: Persist Repositories
+		fmt.Println("finished syncing repos from", source.Name())
 	}
 	return nil
 }

@@ -39,6 +39,10 @@ func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
 	return &bitbucketClient{Client: c}, nil
 }
 
+func (c *bitbucketClient) Name() string {
+	return system
+}
+
 func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
 	fmt.Println("Fetching bitbucket open pull requests")
 
