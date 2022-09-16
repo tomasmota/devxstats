@@ -10,6 +10,7 @@ Service that fetches and stores developer experience related metrics from differ
 - make different syncs run in paralel (e.g. PullRequests and repos)
 - different entities can be synced in different frequencies, such as repos vs commits
 - put constants such as database name somewhere central
+- abstract pagination (probably using generics)
 
 ## Supported data sources
 
