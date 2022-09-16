@@ -11,9 +11,6 @@ Service that fetches and stores developer experience related metrics from differ
 - different entities can be synced in different frequencies, such as repos vs commits
 - put constants such as database name somewhere central
 
-### Bitbucket todos
-- go-scm does not support listing projects, add that capability
-
 ## Supported data sources
 
 ### Git
