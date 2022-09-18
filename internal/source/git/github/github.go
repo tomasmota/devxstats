@@ -2,8 +2,8 @@ package github
 
 import (
 	"context"
+	"devxstats/internal/model"
 	"devxstats/internal/util"
-	"devxstats/model"
 	"fmt"
 
 	"github.com/drone/go-scm/scm"

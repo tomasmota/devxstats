@@ -1,7 +1,7 @@
 package server
 
 import (
-	"devxstats/server/handler"
+	"devxstats/internal/server/handler"
 	"log"
 	"net/http"
 

@@ -2,7 +2,7 @@ package storage
 
 import (
 	"context"
-	"devxstats/model"
+	"devxstats/internal/model"
 )
 
 // AddGroup implements store

@@ -2,8 +2,8 @@ package octopus
 
 import (
 	"context"
+	"devxstats/internal/model"
 	"devxstats/internal/util"
-	"devxstats/model"
 	"fmt"
 	"log"
 	"net/url"

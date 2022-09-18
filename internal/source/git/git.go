@@ -3,10 +3,10 @@ package git
 import (
 	"context"
 	"devxstats/internal/config"
-	"devxstats/internal/git/bitbucket"
-	"devxstats/internal/git/github"
-	"devxstats/model"
-	"devxstats/storage"
+	"devxstats/internal/model"
+	"devxstats/internal/source/git/bitbucket"
+	"devxstats/internal/source/git/github"
+	"devxstats/internal/storage"
 	"fmt"
 )
 

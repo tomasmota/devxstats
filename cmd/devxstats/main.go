@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"devxstats/internal/cd"
 	"devxstats/internal/config"
-	"devxstats/internal/git"
-	"devxstats/server"
-	"devxstats/storage"
+	"devxstats/internal/server"
+	"devxstats/internal/source/cd"
+	"devxstats/internal/source/git"
+	"devxstats/internal/storage"
+
 	"fmt"
 	"time"
 )

@@ -2,9 +2,9 @@ package cd
 
 import (
 	"context"
-	"devxstats/internal/cd/octopus"
 	"devxstats/internal/config"
-	"devxstats/model"
+	"devxstats/internal/model"
+	"devxstats/internal/source/cd/octopus"
 )
 
 type CdSyncer struct {

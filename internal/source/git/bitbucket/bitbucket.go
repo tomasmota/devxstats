@@ -2,7 +2,7 @@ package bitbucket
 
 import (
 	"context"
-	"devxstats/model"
+	"devxstats/internal/model"
 	"fmt"
 
 	"devxstats/internal/util"

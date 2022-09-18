@@ -16,8 +16,8 @@ type AppConfig struct {
 }
 
 type DbConfig struct {
-	Host    string `env:"HOST,required"`
-	Port    int    `env:"PORT,default=27017"`
+	// Host    string `env:"HOST,required"`
+	Port    int `env:"PORT,default=27017"`
 	Enabled bool
 }
 
