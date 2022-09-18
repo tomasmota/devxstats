@@ -4,8 +4,10 @@ import (
 	"context"
 	"devxstats/internal/config"
 	"devxstats/internal/model"
+	"fmt"
+	"time"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type store interface {
@@ -17,20 +19,24 @@ type store interface {
 }
 
 type storeImpl struct {
-	db *pgx.Conn
+	db *pgxpool.Pool
 }
 
 func InitializeDB(ctx context.Context, c *config.DbConfig) {
-	// ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	// defer cancel()
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 
-	// conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
-	// if err != nil {
-	// 	panic(fmt.Errorf("an error occured while creating database connection: %v", err))
-	// }
+	pool, err := pgxpool.New(ctx, "") // read from envs
+	if err != nil {
+		panic(fmt.Errorf("an error occured while creating database connection pool: %v", err))
+	}
 
-	conn := &pgx.Conn{}
-	initStore(&storeImpl{db: conn})
+	err = pool.Ping(ctx)
+	if err != nil {
+		panic(fmt.Errorf("an error occured while pinging database: %v", err))
+	}
+
+	initStore(&storeImpl{db: pool})
 }
 
 var DBStore store
