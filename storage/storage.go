@@ -13,10 +13,11 @@ import (
 )
 
 type store interface {
-	AddCommits([]interface{}) error
-	GetCommits(string) ([]model.Commit, error)
-	AddRepos(context.Context, []*model.Repository) error
-	GetRepos(string) ([]model.Repository, error)
+	AddGroup(context.Context, model.Group) error
+	GetGroup(groupID int) (model.Group, error)
+	AddRepo(context.Context, model.Repo) error
+	GetRepo(repoID int) (model.Repo, error)
+	GetRepos(groupID int) (model.Repo, error)
 }
 
 type storeImpl struct {

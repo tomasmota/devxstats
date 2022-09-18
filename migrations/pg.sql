@@ -1,9 +1,9 @@
-DROP TABLE IF EXISTS reviews;
-DROP TABLE IF EXISTS pull_requests;
-DROP TABLE IF EXISTS repos;
-DROP TABLE IF EXISTS groups;
-DROP TABLE IF EXISTS systems;
-DROP TABLE IF EXISTS deployments;
+-- DROP TABLE IF EXISTS reviews;
+-- DROP TABLE IF EXISTS pull_requests;
+-- DROP TABLE IF EXISTS repos;
+-- DROP TABLE IF EXISTS groups;
+-- DROP TABLE IF EXISTS systems;
+-- DROP TABLE IF EXISTS deployments;
 
 CREATE TABLE systems (
     id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -25,9 +25,10 @@ CREATE TABLE groups (
 CREATE TABLE repos (
     id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     group_id INT,
+    scm_id INT,
     name VARCHAR (255) NOT NULL,
 
-    UNIQUE (name, group_id),
+    UNIQUE (scm_id, group_id),
     CONSTRAINT fk_group
       FOREIGN KEY(group_id) 
         REFERENCES groups(id)

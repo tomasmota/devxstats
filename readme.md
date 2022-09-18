@@ -45,7 +45,8 @@ Configuration
 | OCTOPUS_TOKEN        | Token used for authentication | Yes      |
 
 ## TODO:
-- decide on database
+- change over to pg
+- add db indices
 - document public methods
 - handle pagination
 - make different syncs run in paralel (e.g. PullRequests and repos)
