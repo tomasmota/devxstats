@@ -2,54 +2,61 @@ package model
 
 import (
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Build struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	StartTime time.Time          `bson:"starttime,omitempty"`
-	EndTime   time.Time          `bson:"endtime,omitempty"`
-	System    string             `bson:"system,omitempty"` // e.g. Tekton, Teamcity
-	Group     string             `bson:"group,omitempty"`  // tekton namespace, teamcity high-level project
-	Project   string             `bson:"repo,omitempty"`   // tekton pipeline, teamcity project
-	User      string             `bson:"user,omitempty"`
-	Succeeded bool               `bson:"succeeded,omitempty"`
+// System info is pulled from, e.g. Github, ArgoCD, Tekton, Jira
+type System struct {
+	ID   int
+	Name string
+	Type string
 }
 
-type Repository struct {
-	ID     primitive.ObjectID `bson:"_id,omitempty"`
-	System string             `bson:"system,omitempty"` // e.g. Github, Bitbucket
-	Group  string             `bson:"group,omitempty"`  // Github org, Bitbucket project
-	Name   string             `bson:"repo,omitempty"`
+// High level grouping of resources, might contain repositories or projects within
+type Group struct {
+	ID       int
+	SystemID int
+	Name     string
+}
+
+// TODO: add this to schema once implementation is started
+type Project struct {
+	ID      int
+	GroupID int
+	Name    string
+}
+
+type Repo struct {
+	ID      int
+	GroupID int
+	ScmID   int
+	Name    string
 }
 
 type PullRequest struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	OpenTime  time.Time          `bson:"opentime,omitempty"`
-	CloseTime time.Time          `bson:"closetime,omitempty"`
-	Status    string             `bson:"status,omitempty"`
-	System    string             `bson:"system,omitempty"` // e.g. Github, Bitbucket
-	Group     string             `bson:"group,omitempty"`  // Github org, Bitbucket project
-	Repo      string             `bson:"repo,omitempty"`
-	User      string             `bson:"user,omitempty"`
+	ID        int
+	RepoID    int
+	Number    int
+	SourceRef string
+	TargetRef string
+	Closed    bool
+	Merged    bool
+	CreatedAd time.Time
+	ClosedAt  time.Time
 }
 
-type Commit struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	Timestamp time.Time          `bson:"timestamp,omitempty"`
-	System    string             `bson:"system,omitempty"` // e.g. Github, Bitbucket
-	Group     string             `bson:"group,omitempty"`  // Github org, Bitbucket project
-	Repo      string             `bson:"repo,omitempty"`
-	User      string             `bson:"user,omitempty"`
+type Review struct {
+	ID        int
+	PrID      int
+	CreatedAt time.Time
 }
 
+// TODO: add this to schema once implementation is started
 type Deployment struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	StartTime time.Time          `bson:"starttime,omitempty"`
-	EndTime   time.Time          `bson:"endtime,omitempty"`
-	System    string             `bson:"system,omitempty"`
-	Group     string             `bson:"group,omitempty"`
-	Project   string             `bson:"project,omitempty"`
-	Succeeded bool               `bson:"succeeded,omitempty"`
+	ID        int
+	ProjectID int
+	StartTime time.Time
+	EndTime   time.Time
+	System    string
+	Project   string
+	Succeeded bool
 }

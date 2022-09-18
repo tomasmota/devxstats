@@ -87,13 +87,7 @@ func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.Pul
 	return convertPullRequests(prs...), nil
 }
 
-func (c *bitbucketClient) GetCommits(ctx context.Context) ([]*model.Commit, error) {
-	fmt.Println("fetching bitbucket commits")
-	commits := []*scm.Commit{{}} // TODO: Fetch commits here
-	return convertCommits(commits...), nil
-}
-
-func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repository, error) {
+func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
 	fmt.Println("fetching bitbucket repositories")
 	var allRepos []*scm.Repository
 	page := 1
@@ -127,18 +121,12 @@ func convertPullRequests(from ...*scm.PullRequest) []*model.PullRequest {
 	return []*model.PullRequest{{}}
 }
 
-func convertCommits(from ...*scm.Commit) []*model.Commit {
-	// TODO: Implement
-	return []*model.Commit{{}}
-}
-
-func convertRepositories(from ...*scm.Repository) []*model.Repository {
-	var to []*model.Repository
+// TODO: adapt to new model
+func convertRepositories(from ...*scm.Repository) []*model.Repo {
+	var to []*model.Repo
 	for _, r := range from {
-		to = append(to, &model.Repository{
-			System: system,
-			Group:  r.Namespace,
-			Name:   r.Name,
+		to = append(to, &model.Repo{
+			Name: r.Name,
 		})
 	}
 	return to

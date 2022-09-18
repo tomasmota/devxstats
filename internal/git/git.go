@@ -15,9 +15,7 @@ type GitSyncer struct {
 }
 
 type GitClient interface {
-	GetCommits(ctx context.Context) ([]*model.Commit, error)
-	GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error)
-	GetRepositories(ctx context.Context) ([]*model.Repository, error)
+	GetRepositories(ctx context.Context) ([]*model.Repo, error)
 	Name() string
 }
 
@@ -51,13 +49,6 @@ func NewGitSyncer(c *config.GitConfig) *GitSyncer {
 
 func (git *GitSyncer) Sync(ctx context.Context) error {
 	for _, source := range git.sources {
-		_, err := source.GetCommits(ctx)
-		if err != nil {
-			return err
-		}
-
-		// TODO: Persist Commits
-
 		// _, err = source.GetOpenPullRequests(ctx)
 		// if err != nil {
 		// 	return err
@@ -71,9 +62,12 @@ func (git *GitSyncer) Sync(ctx context.Context) error {
 			return err
 		}
 
-		err = storage.DBStore.AddRepos(ctx, repos)
-		if err != nil {
-			return err
+		for _, r := range repos {
+			err = storage.DBStore.AddRepo(ctx, *r)
+			if err != nil {
+				return err
+			}
+
 		}
 		fmt.Println("finished syncing repos from", source.Name())
 	}
