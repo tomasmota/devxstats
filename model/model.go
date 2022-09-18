@@ -28,7 +28,7 @@ type PullRequest struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	OpenTime  time.Time          `bson:"opentime,omitempty"`
 	CloseTime time.Time          `bson:"closetime,omitempty"`
-	Status    time.Time          `bson:"status,omitempty"`
+	Status    string             `bson:"status,omitempty"`
 	System    string             `bson:"system,omitempty"` // e.g. Github, Bitbucket
 	Group     string             `bson:"group,omitempty"`  // Github org, Bitbucket project
 	Repo      string             `bson:"repo,omitempty"`

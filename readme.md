@@ -11,9 +11,8 @@ Note: These metrics should be used in combination with satisfaction, well-being,
 - Pull Requests completed in a given period
 - Pull Request size, in lines of code
 - Code coverage
-- Number of commits in a given period
 - Deployment frequency
-- Work units finished (e.g. Jira tickets closed)
+- Units of work finished (e.g. Jira tickets closed)
 
 ## Supported data sources
 
