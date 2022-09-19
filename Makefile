@@ -17,10 +17,10 @@ install:
 	@echo ">> Installing devxstats locally"
 	go install cmd/devxstats/main.go
 
-.PHONY: mongo
-mongo:
-	docker run --rm -d -p 27017:27017 --name db mongo:latest
-
+.PHONY: pg
+pg:
+	docker run --name pg -e POSTGRES_PASSWORD=mypass -e POSTGRES_USER=myuser -e POSTGRES_DB=devxstats -d postgres
+#TODO: Put in .sql file here 
 .PHONY: run
 run:
 	go run cmd/devxstats/main.go
