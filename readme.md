@@ -45,6 +45,7 @@ Configuration
 | OCTOPUS_TOKEN        | Token used for authentication | Yes      |
 
 ## TODO:
+- refactor to remove storeimpl
 - change over to pg
 - add db indices
 - document public methods
