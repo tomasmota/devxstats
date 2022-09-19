@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"devxstats/internal/storage"
+	storage "devxstats/internal/db"
 	"net/http"
 
 	"github.com/gorilla/schema"
