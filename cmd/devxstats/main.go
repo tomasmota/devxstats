@@ -37,7 +37,8 @@ func main() {
 	c := config.Load(ctx)
 
 	// Initialize and ping database
-	db.InitPostgres(ctx, c.Db)
+	db := db.InitPostgres(ctx, c.Db)
+	db.GetRepo(ctx, 123)
 
 	// Start syncing sources in the background
 	go syncSources(ctx, *c)

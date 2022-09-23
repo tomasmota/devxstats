@@ -20,7 +20,8 @@ install:
 .PHONY: pg
 pg:
 	docker run -p 5432:5432 --name pg -e POSTGRES_PASSWORD=${PGPASSWORD} -e POSTGRES_USER=${PGUSER} -e POSTGRES_DB=${PGDATABASE} -d postgres
-#TODO: Put in .sql file here 
+	sleep 1
+	cat migrations/init.sql | docker exec -i pg psql -U ${PGUSER} -d ${PGDATABASE}
 
 .PHONY: run
 run:

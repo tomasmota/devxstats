@@ -5,6 +5,7 @@ import (
 	"devxstats/internal/config"
 	"devxstats/internal/model"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -34,7 +35,7 @@ func InitPostgres(ctx context.Context, c *config.DbConfig) DB {
 }
 
 // AddGroup implements store
-func (*pgdb) AddGroup(context.Context, model.Group) error {
+func (db *pgdb) AddGroup(context.Context, model.Group) error {
 	panic("unimplemented")
 }
 
@@ -52,16 +53,30 @@ func (db *pgdb) AddRepo(ctx context.Context, repo model.Repo) error {
 }
 
 // GetGroup implements store
-func (*pgdb) GetGroup(int) (model.Group, error) {
+func (db *pgdb) GetGroup(ctx context.Context, groupID int) (*model.Group, error) {
 	panic("unimplemented")
 }
 
 // GetRepo implements store
-func (*pgdb) GetRepo(int) (model.Repo, error) {
-	panic("unimplemented")
+func (db *pgdb) GetRepo(ctx context.Context, repoID int) (*model.Repo, error) {
+	rows, err := db.pool.Query(ctx, "SELECT * FROM systems")
+	if err != nil {
+		return nil, fmt.Errorf("an error ocurred executing query: %w", err)
+	}
+	for rows.Next() {
+		values, err := rows.Values()
+		if err != nil {
+			return nil, fmt.Errorf("an error while iterating through rows: %w", err)
+		}
+
+		for _, v := range values {
+			log.Println(v)
+		}
+	}
+	return nil, nil
 }
 
 // GetRepos implements store
-func (*pgdb) GetRepos(groupID int) (model.Repo, error) {
+func (db *pgdb) GetRepos(ctx context.Context, groupID int) (*model.Repo, error) {
 	panic("unimplemented")
 }
