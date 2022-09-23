@@ -19,8 +19,9 @@ install:
 
 .PHONY: pg
 pg:
-	docker run --name pg -e POSTGRES_PASSWORD=mypass -e POSTGRES_USER=myuser -e POSTGRES_DB=devxstats -d postgres
+	docker run -p 5432:5432 --name pg -e POSTGRES_PASSWORD=${PGPASSWORD} -e POSTGRES_USER=${PGUSER} -e POSTGRES_DB=${PGDATABASE} -d postgres
 #TODO: Put in .sql file here 
+
 .PHONY: run
 run:
 	go run cmd/devxstats/main.go

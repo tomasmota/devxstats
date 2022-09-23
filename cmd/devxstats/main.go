@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"devxstats/internal/config"
+	"devxstats/internal/db"
 	"devxstats/internal/server"
 	"devxstats/internal/source/cd"
 	"devxstats/internal/source/git"
-	"devxstats/internal/storage"
 
 	"fmt"
 	"time"
@@ -37,7 +37,7 @@ func main() {
 	c := config.Load(ctx)
 
 	// Initialize and ping database
-	storage.InitializeDB(ctx, c.Db)
+	db.InitPostgres(ctx, c.Db)
 
 	// Start syncing sources in the background
 	go syncSources(ctx, *c)

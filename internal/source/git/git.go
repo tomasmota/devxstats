@@ -6,7 +6,6 @@ import (
 	"devxstats/internal/model"
 	"devxstats/internal/source/git/bitbucket"
 	"devxstats/internal/source/git/github"
-	"devxstats/internal/storage"
 	"fmt"
 )
 
@@ -57,18 +56,18 @@ func (git *GitSyncer) Sync(ctx context.Context) error {
 		// TODO: Persist PullRequests
 
 		// REPOS
-		repos, err := source.GetRepositories(ctx)
+		_, err := source.GetRepositories(ctx)
 		if err != nil {
 			return err
 		}
 
-		for _, r := range repos {
-			err = storage.DBStore.AddRepo(ctx, *r)
-			if err != nil {
-				return err
-			}
+		// for _, r := range repos {
+		// 	err = storage.DBStore.AddRepo(ctx, *r)
+		// 	if err != nil {
+		// 		return err
+		// 	}
 
-		}
+		// }
 		fmt.Println("finished syncing repos from", source.Name())
 	}
 	return nil
