@@ -9,6 +9,16 @@ import (
 
 var decoder = schema.NewDecoder()
 
+func (s *HTTPServer) GetSystems(w http.ResponseWriter, r *http.Request) {
+	systems, err := s.db.GetSystems(r.Context())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, systems)
+}
+
 func (s *HTTPServer) GetRepositories(w http.ResponseWriter, r *http.Request) {
 	var filter model.RepoFilter
 	err := decoder.Decode(&filter, r.URL.Query())
@@ -18,11 +28,11 @@ func (s *HTTPServer) GetRepositories(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//TODO: pass filter in here
-	events, err := s.db.GetRepo(r.Context(), 123) // get a mapping from groupname to id, or just search by name? Should search be done across all systems by default?
+	repos, err := s.db.GetRepo(r.Context(), 123) // get a mapping from groupname to id, or just search by name? Should search be done across all systems by default?
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, events)
+	respondWithJSON(w, http.StatusOK, repos)
 }

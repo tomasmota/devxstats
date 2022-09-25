@@ -6,6 +6,7 @@ import (
 )
 
 type DB interface {
+	GetSystems(ctx context.Context) ([]*model.System, error)
 	AddGroup(context.Context, model.Group) error
 	GetGroup(ctx context.Context, groupID int) (*model.Group, error)
 	AddRepo(context.Context, model.Repo) error

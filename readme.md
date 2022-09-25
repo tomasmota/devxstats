@@ -45,12 +45,10 @@ Configuration
 | OCTOPUS_TOKEN        | Token used for authentication | Yes      |
 
 ## TODO:
-- refactor to remove storeimpl
-- change over to pg
 - add db indices
 - document public methods
 - handle pagination
 - make different syncs run in paralel (e.g. PullRequests and repos)
 - different entities can be synced in different frequencies, such as repos vs commits
-- put constants such as database name somewhere central
 - abstract pagination (probably using generics)
+- update to pgxpool v5 once scanny has been upgraded

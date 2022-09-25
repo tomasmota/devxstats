@@ -4,11 +4,14 @@ import (
 	"context"
 	"devxstats/internal/config"
 	"devxstats/internal/model"
+	"errors"
 	"fmt"
 	"log"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/georgysavva/scany/pgxscan"
+	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 // var pool *pgxpool.Pool
@@ -21,7 +24,7 @@ func InitPostgres(ctx context.Context, c *config.DbConfig) DB {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "") // read from envs
+	pool, err := pgxpool.Connect(ctx, "") // read from envs
 	if err != nil {
 		panic(fmt.Errorf("an error occured while creating database connection pool: %v", err))
 	}
@@ -32,6 +35,22 @@ func InitPostgres(ctx context.Context, c *config.DbConfig) DB {
 	}
 
 	return &pgdb{pool: pool}
+}
+
+// GetSystems implements DB
+func (db *pgdb) GetSystems(ctx context.Context) ([]*model.System, error) {
+	rows, err := db.pool.Query(ctx, "SELECT * FROM systems")
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("error running query %w", err)
+	}
+	defer rows.Close()
+
+	var systems []*model.System
+	pgxscan.Select(ctx, db.pool, &systems, `SELECT * FROM systems`)
+	return systems, nil
 }
 
 // AddGroup implements store

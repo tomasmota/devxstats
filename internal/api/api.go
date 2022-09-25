@@ -17,6 +17,7 @@ func NewHTTPServer(db db.DB) *HTTPServer {
 	s := &HTTPServer{db: db}
 	s.Router = mux.NewRouter()
 	s.Router.HandleFunc("/repos", s.GetRepositories).Methods("GET")
+	s.Router.HandleFunc("/systems", s.GetSystems).Methods("GET")
 	return s
 }
 
