@@ -5,14 +5,11 @@ import (
 	"devxstats/internal/config"
 	"devxstats/internal/model"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
-
-// var pool *pgxpool.Pool
 
 type pgdb struct {
 	pool *pgxpool.Pool
@@ -52,15 +49,7 @@ func (db *pgdb) AddGroup(context.Context, model.Group) error {
 
 // AddRepo implements store
 func (db *pgdb) AddRepo(ctx context.Context, repo model.Repo) error {
-	conn, err := db.pool.Acquire(ctx)
-	if err != nil {
-		return fmt.Errorf("unable to acquire db conn %w", err)
-	}
-	_, err = conn.Exec(ctx, "SELECT * FROM systems") // TODO: add real query
-	if err != nil {
-		return fmt.Errorf("error running query %w", err)
-	}
-	return nil
+	panic("unimplemented")
 }
 
 // GetGroup implements store
@@ -70,21 +59,7 @@ func (db *pgdb) GetGroup(ctx context.Context, groupID int) (*model.Group, error)
 
 // GetRepo implements store
 func (db *pgdb) GetRepo(ctx context.Context, repoID int) (*model.Repo, error) {
-	rows, err := db.pool.Query(ctx, "SELECT * FROM systems")
-	if err != nil {
-		return nil, fmt.Errorf("an error ocurred executing query: %w", err)
-	}
-	for rows.Next() {
-		values, err := rows.Values()
-		if err != nil {
-			return nil, fmt.Errorf("an error while iterating through rows: %w", err)
-		}
-
-		for _, v := range values {
-			log.Println(v)
-		}
-	}
-	return nil, nil
+	panic("unimplemented")
 }
 
 // GetRepos implements store

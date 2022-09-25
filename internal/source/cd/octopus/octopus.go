@@ -5,7 +5,6 @@ import (
 	"devxstats/internal/model"
 	"devxstats/internal/util"
 	"fmt"
-	"log"
 	"net/url"
 
 	"github.com/OctopusDeploy/go-octopusdeploy/octopusdeploy"
@@ -30,7 +29,7 @@ func NewOctopusClient(config *OctopusConfig) (*octopusClient, error) {
 
 	c, err := od.NewClient(util.NewHttpClient(), url, config.Token, "")
 	if err != nil {
-		log.Fatalf("error creating octopus client: %w", err)
+		return nil, fmt.Errorf("error creating octopus client: %w", err)
 	}
 
 	return &octopusClient{Client: c}, nil
