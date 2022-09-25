@@ -20,11 +20,11 @@ func syncSources(ctx context.Context, c config.AppConfig, db db.DB) {
 	fmt.Println("\n---- Syncing Sources ----")
 	err := git.Sync(ctx)
 	if err != nil {
-		panic(fmt.Errorf("error syncing git sources: %v", err))
+		panic(fmt.Errorf("error syncing git sources: %w", err))
 	}
 	err = cd.Sync(ctx)
 	if err != nil {
-		panic(fmt.Errorf("error syncing cd sources: %v", err))
+		panic(fmt.Errorf("error syncing cd sources: %w", err))
 	}
 	time.Sleep(5000 * time.Millisecond)
 	// }

@@ -27,7 +27,7 @@ func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
 
 	c, err := stash.New(config.BaseUrl)
 	if err != nil {
-		return nil, fmt.Errorf("an error occured while creating bitbucket client: %v", err)
+		return nil, fmt.Errorf("an error occured while creating bitbucket client: %w", err)
 	}
 
 	c.Client = util.NewBearerHttpClient(config.Token)
@@ -53,7 +53,7 @@ func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.Pul
 		}
 		repos, res, err := c.Client.Repositories.List(ctx, opts)
 		if err != nil {
-			return nil, fmt.Errorf("error fetching repositories: %v", err)
+			return nil, fmt.Errorf("error fetching repositories: %w", err)
 		}
 		if res.Status != 200 {
 			return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
@@ -65,7 +65,7 @@ func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.Pul
 		for _, r := range repos {
 			prs, res, err := c.Client.PullRequests.List(ctx, fmt.Sprintf("%v/%v", r.Namespace, r.Name), scm.PullRequestListOptions{Open: true})
 			if err != nil {
-				return nil, fmt.Errorf("error fetching repositories: %v", err)
+				return nil, fmt.Errorf("error fetching repositories: %w", err)
 			}
 			if res.Status != 200 {
 				return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
@@ -99,7 +99,7 @@ func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repo, e
 		}
 		repos, res, err := c.Client.Repositories.List(ctx, opts)
 		if err != nil {
-			return nil, fmt.Errorf("error fetching repositories: %v", err)
+			return nil, fmt.Errorf("error fetching repositories: %w", err)
 		}
 		if res.Status != 200 {
 			return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)

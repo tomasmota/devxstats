@@ -46,7 +46,7 @@ func Load(ctx context.Context) *AppConfig {
 
 	c := &AppConfig{}
 	if err := envconfig.Process(ctx, c); err != nil {
-		panic(fmt.Errorf("error parsing environment variables into config: %v", err))
+		panic(fmt.Errorf("error parsing environment variables into config: %w", err))
 	}
 
 	githubF := flag.Bool("github", false, "Set to true to enable github source")

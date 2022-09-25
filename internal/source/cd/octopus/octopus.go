@@ -25,12 +25,12 @@ func NewOctopusClient(config *OctopusConfig) (*octopusClient, error) {
 	fmt.Println("creating octopus client")
 	url, err := url.Parse(config.BaseUrl)
 	if err != nil {
-		return nil, fmt.Errorf("an error occured while parsing octoups url: %v", err)
+		return nil, fmt.Errorf("an error occured while parsing octoups url: %w", err)
 	}
 
 	c, err := od.NewClient(util.NewHttpClient(), url, config.Token, "")
 	if err != nil {
-		log.Fatalf("error creating octopus client: %v", err)
+		log.Fatalf("error creating octopus client: %w", err)
 	}
 
 	return &octopusClient{Client: c}, nil
