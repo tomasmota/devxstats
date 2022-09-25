@@ -3,6 +3,7 @@ package git
 import (
 	"context"
 	"devxstats/internal/config"
+	"devxstats/internal/db"
 	"devxstats/internal/model"
 	"devxstats/internal/source/git/bitbucket"
 	"devxstats/internal/source/git/github"
@@ -11,6 +12,7 @@ import (
 
 type GitSyncer struct {
 	sources []GitClient
+	db      db.DB
 }
 
 type GitClient interface {
@@ -18,7 +20,7 @@ type GitClient interface {
 	Name() string
 }
 
-func NewGitSyncer(c *config.GitConfig) *GitSyncer {
+func NewGitSyncer(c *config.GitConfig, db db.DB) *GitSyncer {
 	syncer := &GitSyncer{}
 	if c.Bitbucket.Enabled {
 		bc, err := bitbucket.NewBitbucketClient(
@@ -43,11 +45,13 @@ func NewGitSyncer(c *config.GitConfig) *GitSyncer {
 		syncer.sources = append(syncer.sources, githubClient)
 	}
 
+	syncer.db = db
+
 	return syncer
 }
 
-func (git *GitSyncer) Sync(ctx context.Context) error {
-	for _, source := range git.sources {
+func (s *GitSyncer) Sync(ctx context.Context) error {
+	for _, source := range s.sources {
 		// _, err = source.GetOpenPullRequests(ctx)
 		// if err != nil {
 		// 	return err
@@ -56,18 +60,17 @@ func (git *GitSyncer) Sync(ctx context.Context) error {
 		// TODO: Persist PullRequests
 
 		// REPOS
-		_, err := source.GetRepositories(ctx)
+		repos, err := source.GetRepositories(ctx)
 		if err != nil {
 			return err
 		}
 
-		// for _, r := range repos {
-		// 	err = storage.DBStore.AddRepo(ctx, *r)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// }
+		for _, r := range repos {
+			s.db.AddRepo(ctx, *r)
+			if err != nil {
+				return err
+			}
+		}
 		fmt.Println("finished syncing repos from", source.Name())
 	}
 	return nil

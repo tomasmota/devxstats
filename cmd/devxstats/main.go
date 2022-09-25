@@ -13,9 +13,9 @@ import (
 )
 
 // Fetches events from all sources and stores them on a loop
-func syncSources(ctx context.Context, c config.AppConfig) {
-	git := git.NewGitSyncer(c.Git)
-	cd := cd.NewCdSyncer(c.Cd)
+func syncSources(ctx context.Context, c config.AppConfig, db db.DB) {
+	git := git.NewGitSyncer(c.Git, db)
+	cd := cd.NewCdSyncer(c.Cd, db)
 	// for {
 	fmt.Println("\n---- Syncing Sources ----")
 	err := git.Sync(ctx)
@@ -41,7 +41,7 @@ func main() {
 	db.GetRepo(ctx, 123)
 
 	// Start syncing sources in the background
-	go syncSources(ctx, *c)
+	go syncSources(ctx, *c, db)
 
 	// Initialize http server
 	app := &server.App{}
