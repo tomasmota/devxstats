@@ -32,6 +32,12 @@ type Repo struct {
 	Name    string
 }
 
+type RepoFilter struct {
+	System string `schema:"system"`
+	Group  string `schema:"group"`
+	Name   string `schema:"repo"`
+}
+
 type PullRequest struct {
 	ID        int
 	RepoID    int

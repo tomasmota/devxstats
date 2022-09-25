@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"devxstats/internal/api"
 	"devxstats/internal/config"
 	"devxstats/internal/db"
-	"devxstats/internal/server"
 	"devxstats/internal/source/cd"
 	"devxstats/internal/source/git"
 
@@ -44,7 +44,6 @@ func main() {
 	go syncSources(ctx, *c, db)
 
 	// Initialize http server
-	app := &server.App{}
-	app.InitializeRoutes()
-	app.Run(fmt.Sprintf(":%d", c.Port))
+	s := api.NewHTTPServer(db)
+	s.Run(fmt.Sprintf(":%d", c.Port))
 }
