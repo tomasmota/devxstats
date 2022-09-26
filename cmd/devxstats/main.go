@@ -17,7 +17,6 @@ func syncSources(ctx context.Context, c config.AppConfig, db db.DB) {
 	git := git.NewGitSyncer(c.Git, db)
 	cd := cd.NewCdSyncer(c.Cd, db)
 	// for {
-	fmt.Println("\n---- Syncing Sources ----")
 	err := git.Sync(ctx)
 	if err != nil {
 		panic(fmt.Errorf("error syncing git sources: %w", err))
@@ -38,7 +37,6 @@ func main() {
 
 	// Initialize and ping database
 	db := db.InitPostgres(ctx, c.Db)
-	db.GetRepo(ctx, 123)
 
 	// Start syncing sources in the background
 	go syncSources(ctx, *c, db)

@@ -19,7 +19,7 @@ func InitPostgres(ctx context.Context, c *config.DbConfig) DB {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.Connect(ctx, "") // read from envs
+	pool, err := pgxpool.Connect(ctx, "") // config gets read from envs: https://www.postgresql.org/docs/current/libpq-envars.html
 	if err != nil {
 		panic(fmt.Errorf("an error occured while creating database connection pool: %w", err))
 	}
@@ -29,10 +29,10 @@ func InitPostgres(ctx context.Context, c *config.DbConfig) DB {
 		panic(fmt.Errorf("an error occured while pinging database: %w", err))
 	}
 
+	fmt.Println("db connection innitialized")
 	return &pgdb{pool: pool}
 }
 
-// GetSystems implements DB
 func (db *pgdb) GetSystems(ctx context.Context) ([]*model.System, error) {
 	var systems []*model.System
 	err := pgxscan.Select(ctx, db.pool, &systems, `SELECT * FROM systems`)
@@ -42,27 +42,22 @@ func (db *pgdb) GetSystems(ctx context.Context) ([]*model.System, error) {
 	return systems, nil
 }
 
-// AddGroup implements store
 func (db *pgdb) AddGroup(context.Context, model.Group) error {
 	panic("unimplemented")
 }
 
-// AddRepo implements store
 func (db *pgdb) AddRepo(ctx context.Context, repo model.Repo) error {
 	panic("unimplemented")
 }
 
-// GetGroup implements store
 func (db *pgdb) GetGroup(ctx context.Context, groupID int) (*model.Group, error) {
 	panic("unimplemented")
 }
 
-// GetRepo implements store
 func (db *pgdb) GetRepo(ctx context.Context, repoID int) (*model.Repo, error) {
 	panic("unimplemented")
 }
 
-// GetRepos implements store
 func (db *pgdb) GetRepos(ctx context.Context, groupID int) (*model.Repo, error) {
 	panic("unimplemented")
 }

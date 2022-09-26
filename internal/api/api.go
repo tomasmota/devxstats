@@ -2,6 +2,7 @@ package api
 
 import (
 	"devxstats/internal/db"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -22,5 +23,6 @@ func NewHTTPServer(db db.DB) *HTTPServer {
 }
 
 func (s *HTTPServer) Run(address string) {
+	fmt.Println("initializing http server")
 	log.Fatal(http.ListenAndServe(address, s.Router))
 }
