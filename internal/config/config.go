@@ -9,16 +9,9 @@ import (
 )
 
 type AppConfig struct {
-	Port int       `env:"PORT,default=8080"`
-	Db   *DbConfig `env:",prefix=DB_"`
+	Port int `env:"PORT,default=8080"`
 	Git  *GitConfig
 	Cd   *CdConfig
-}
-
-type DbConfig struct {
-	// Host    string `env:"HOST,required"`
-	Port    int `env:"PORT,default=27017"`
-	Enabled bool
 }
 
 type GitConfig struct {
@@ -43,7 +36,6 @@ type CdConfig struct {
 }
 
 func Load(ctx context.Context) *AppConfig {
-
 	c := &AppConfig{}
 	if err := envconfig.Process(ctx, c); err != nil {
 		panic(fmt.Errorf("error parsing environment variables into config: %w", err))
