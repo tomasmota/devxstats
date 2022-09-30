@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"devxstats/internal/config"
 	"devxstats/internal/model"
 	"fmt"
 	"time"
@@ -15,7 +14,7 @@ type pgdb struct {
 	pool *pgxpool.Pool
 }
 
-func InitPostgres(ctx context.Context, c *config.DbConfig) DB {
+func InitPostgres(ctx context.Context) DB {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
