@@ -3,77 +3,77 @@ package bitbucket
 import (
 	"context"
 	"devxstats/internal/model"
-	"fmt"
-
 	"devxstats/internal/util"
+	"fmt"
+	"net/http"
 
 	"github.com/drone/go-scm/scm"
-	"github.com/drone/go-scm/scm/driver/stash"
 )
 
-type BitbucketConfig struct {
-	BaseUrl string
-	Token   string
+type BitbucketProject struct {
+	Description string `json:"description"`
+	Namespace   string `json:"namespace"`
+	Avatar      string `json:"avatar"`
+	Scope       string `json:"scope"`
+	Name        string `json:"name"`
+	Key         string `json:"key"`
+	ID          int    `json:"id"`
+	Type        string `json:"type"`
+	Public      bool   `json:"public"`
 }
 
-type bitbucketClient struct {
-	Client *scm.Client
+const (
+	apiPath = "/rest/api/1.0"
+)
+
+type client struct {
+	baseURL    string
+	token      string
+	httpClient *http.Client
 }
 
 const system = "bitbucket"
 
-func NewBitbucketClient(config *BitbucketConfig) (*bitbucketClient, error) {
-	fmt.Println("creating bitbucket client, endpoint: ", config.BaseUrl)
+func NewClient(baseURL string, token string) (*client, error) {
+	fmt.Println("creating %v client, endpoint: ", system, baseURL)
 
-	c, err := stash.New(config.BaseUrl)
+	c := &client{
+		baseURL:    fmt.Sprintf("%s%s", baseURL, apiPath),
+		token:      token,
+		httpClient: util.NewBearerHttpClient(token),
+	}
+	_, err := c.GetGroups(context.Background()) // use GetGroups as a test call
 	if err != nil {
-		return nil, fmt.Errorf("an error occured while creating bitbucket client: %w", err)
+		return nil, fmt.Errorf("error creating %v client: %w", system, err)
 	}
 
-	c.Client = util.NewBearerHttpClient(config.Token)
-
-	return &bitbucketClient{Client: c}, nil
+	return c, nil
 }
 
-func (c *bitbucketClient) Name() string {
+func (c *client) Name() string {
 	return system
 }
 
-func (c *bitbucketClient) GetGroups(ctx context.Context) ([]*model.Group, error) {
+func (c *client) GetGroups(ctx context.Context) ([]*model.Group, error) {
 	fmt.Println("fetching groups")
-	// s := &model.System{Name: system} // TODO: fetch system id from database and use it to make groups
-	var groups []*model.Group
-	// page := 1
+	groups := []*model.Group{}
+	// pagedGroups := &Page{Values: groups}
 
-	// for {
-	// 	opts := scm.ListOptions{
-	// 		Page: page,
-	// 		Size: 1000,
-	// 	}
-	// 	repos, res, err := c.Client.Repositories.List(ctx, opts)
-	// 	if err != nil {
-	// 		return nil, fmt.Errorf("error fetching %s groups: %w", system, err)
-	// 	}
-	// 	if res.Status != 200 {
-	// 		return nil, fmt.Errorf("error fetching %s groups, received status: %d", system, res.Status)
-	// 	}
-
-	// 	page = res.Page.Next
-
-	// 	for _, r := range repos {
-	// 		if !util.Contains[string](groups, r.Namespace) {
-	// 			groups = append(groups, r.Namespace)
-	// 		}
-	// 	}
-
-	// 	if res.Page.Next == 0 {
-	// 		break
-	// 	}
+	// r, err := c.httpClient.Get(fmt.Sprintf("%s/projects", c.baseURL))
+	// if err != nil {
+	// 	fmt.Errorf("error fetching projects: %w", err)
 	// }
+
+	// defer r.Body.Close()
+	// err = json.NewDecoder(r.Body).Decode(pagedGroups)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("error decoding groups from api response: %w", err)
+	// }
+
 	return groups, nil
 }
 
-func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
+func (c *client) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
 	fmt.Println("fetching bitbucket repositories")
 	var allRepos []*scm.Repository
 	page := 1
@@ -102,7 +102,7 @@ func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repo, e
 	return convertRepositories(allRepos...), nil
 }
 
-func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
+func (c *client) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
 	fmt.Println("fetching bitbucket open pull requests")
 
 	var prCount, repoCount int

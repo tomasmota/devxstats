@@ -10,24 +10,18 @@ import (
 	"github.com/drone/go-scm/scm/driver/github"
 )
 
-type GithubConfig struct {
-	BaseUrl string
-	Token   string
-}
-
 type githubClient struct {
 	Client *scm.Client
 }
 
 const system = "github"
 
-// Creates a new client from *GithubConfig
-func NewClient(config *GithubConfig) (*githubClient, error) {
+func NewClient(baseURL string, token string) (*githubClient, error) {
 	fmt.Println("creating github client")
 	var c *scm.Client
 	var err error
-	if config.BaseUrl != "" {
-		c, err = github.New(config.BaseUrl)
+	if baseURL != "" {
+		c, err = github.New(baseURL)
 		if err != nil {
 			return nil, err
 		}
@@ -35,7 +29,7 @@ func NewClient(config *GithubConfig) (*githubClient, error) {
 		c = github.NewDefault()
 	}
 
-	c.Client = util.NewBearerHttpClient(config.Token)
+	c.Client = util.NewBearerHttpClient(token)
 
 	return &githubClient{Client: c}, nil
 }

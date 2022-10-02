@@ -24,26 +24,18 @@ type GitClient interface {
 func NewGitSyncer(c *config.GitConfig, db db.DB) *GitSyncer {
 	syncer := &GitSyncer{}
 	if c.Bitbucket.Enabled {
-		bc, err := bitbucket.NewBitbucketClient(
-			&bitbucket.BitbucketConfig{
-				BaseUrl: c.Bitbucket.Url,
-				Token:   c.Bitbucket.Token,
-			})
+		bc, err := bitbucket.NewClient(c.Bitbucket.Url, c.Bitbucket.Token)
 		if err != nil {
 			panic(err)
 		}
 		syncer.sources = append(syncer.sources, bc)
 	}
 	if c.Github.Enabled {
-		githubClient, err := github.NewClient(
-			&github.GithubConfig{
-				BaseUrl: c.Github.Url,
-				Token:   c.Github.Token,
-			})
+		gc, err := github.NewClient(c.Github.Url, c.Github.Token)
 		if err != nil {
 			panic(err)
 		}
-		syncer.sources = append(syncer.sources, githubClient)
+		syncer.sources = append(syncer.sources, gc)
 	}
 
 	syncer.db = db
