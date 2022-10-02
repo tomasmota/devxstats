@@ -39,6 +39,39 @@ func (c *bitbucketClient) Name() string {
 	return system
 }
 
+func (c *bitbucketClient) GetGroups(ctx context.Context) ([]*model.Group, error) {
+	panic("not implemented")
+}
+
+func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
+	fmt.Println("fetching bitbucket repositories")
+	var allRepos []*scm.Repository
+	page := 1
+
+	for {
+		opts := scm.ListOptions{
+			Page: page,
+			Size: 100,
+		}
+		repos, res, err := c.Client.Repositories.List(ctx, opts)
+		if err != nil {
+			return nil, fmt.Errorf("error fetching repositories: %w", err)
+		}
+		if res.Status != 200 {
+			return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
+		}
+
+		page = res.Page.Next
+		allRepos = append(allRepos, repos...)
+
+		if res.Page.Next == 0 {
+			break
+		}
+	}
+	fmt.Printf("found %v repos\n", len(allRepos))
+	return convertRepositories(allRepos...), nil
+}
+
 func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
 	fmt.Println("fetching bitbucket open pull requests")
 
@@ -87,41 +120,6 @@ func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.Pul
 	return convertPullRequests(prs...), nil
 }
 
-func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
-	fmt.Println("fetching bitbucket repositories")
-	var allRepos []*scm.Repository
-	page := 1
-
-	for {
-		opts := scm.ListOptions{
-			Page: page,
-			Size: 100,
-		}
-		repos, res, err := c.Client.Repositories.List(ctx, opts)
-		if err != nil {
-			return nil, fmt.Errorf("error fetching repositories: %w", err)
-		}
-		if res.Status != 200 {
-			return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
-		}
-
-		page = res.Page.Next
-		allRepos = append(allRepos, repos...)
-
-		if res.Page.Next == 0 {
-			break
-		}
-	}
-	fmt.Printf("found %v repos\n", len(allRepos))
-	return convertRepositories(allRepos...), nil
-}
-
-func convertPullRequests(from ...*scm.PullRequest) []*model.PullRequest {
-	// TODO: Implement
-	return []*model.PullRequest{{}}
-}
-
-// TODO: adapt to new model
 func convertRepositories(from ...*scm.Repository) []*model.Repo {
 	var to []*model.Repo
 	for _, r := range from {
@@ -130,4 +128,9 @@ func convertRepositories(from ...*scm.Repository) []*model.Repo {
 		})
 	}
 	return to
+}
+
+func convertPullRequests(from ...*scm.PullRequest) []*model.PullRequest {
+	// TODO: Implement
+	return []*model.PullRequest{{}}
 }

@@ -44,21 +44,32 @@ func (c *githubClient) Name() string {
 	return system
 }
 
+func (c *githubClient) GetGroups(ctx context.Context) ([]*model.Group, error) {
+	fmt.Println("get groups")
+	orgs, res, err := c.Client.Organizations.List(ctx, scm.ListOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("error fetching repositories: %w", err)
+	}
+	if res.Status != 200 {
+		return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
+	}
+	for _, org := range orgs {
+		fmt.Println(org.Name)
+	}
+
+	repos := []*scm.Organization{{}} // TODO: fetch prs here
+	return convertGroups(repos...), nil
+}
+
+func convertGroups(from ...*scm.Organization) []*model.Group {
+	// TODO: Implement
+	return []*model.Group{{}}
+}
+
 func (c *githubClient) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
-	fmt.Println("fetching github open pull requests")
+	fmt.Println("fetching github repos")
 	repos := []*scm.Repository{{}} // TODO: fetch prs here
 	return convertRepositories(repos...), nil
-}
-
-func (c *githubClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
-	fmt.Println("fetching github open pull requests")
-	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
-	return convertPullRequests(prs...), nil
-}
-
-func convertPullRequests(from ...*scm.PullRequest) []*model.PullRequest {
-	// TODO: Implement
-	return []*model.PullRequest{{}}
 }
 
 func convertRepositories(from ...*scm.Repository) []*model.Repo {
@@ -70,4 +81,15 @@ func convertRepositories(from ...*scm.Repository) []*model.Repo {
 		})
 	}
 	return to
+}
+
+func (c *githubClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
+	fmt.Println("fetching github open pull requests")
+	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
+	return convertPullRequests(prs...), nil
+}
+
+func convertPullRequests(from ...*scm.PullRequest) []*model.PullRequest {
+	// TODO: Implement
+	return []*model.PullRequest{{}}
 }
