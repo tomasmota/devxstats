@@ -1,13 +1,8 @@
-DROP TABLE IF EXISTS reviews;
-
-DROP TABLE IF EXISTS pull_requests;
-
-DROP TABLE IF EXISTS repos;
-
-DROP TABLE IF EXISTS groups;
-
 DROP TABLE IF EXISTS systems;
-
+DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS repos;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS pull_requests;
 DROP TABLE IF EXISTS deployments;
 
 CREATE TABLE systems (
@@ -52,6 +47,14 @@ CREATE TABLE reviews (
   pr_id INT,
   created_at TIMESTAMP NOT NULL,
   CONSTRAINT fk_pr FOREIGN KEY(pr_id) REFERENCES pull_requests(id)
+);
+
+CREATE TABLE cd_pipeline (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  group_id INT,
+  name VARCHAR (255) NOT NULL,
+  UNIQUE (name, group_id),
+  CONSTRAINT fk_group FOREIGN KEY(group_id) REFERENCES groups(id)
 );
 
 -- insert systems
