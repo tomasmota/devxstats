@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/georgysavva/scany/pgxscan"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/georgysavva/scany/v2/pgxscan"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type pgdb struct {
@@ -18,7 +18,7 @@ func InitPostgres(ctx context.Context) DB {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.Connect(ctx, "") // config gets read from envs: https://www.postgresql.org/docs/current/libpq-envars.html
+	pool, err := pgxpool.New(ctx, "") // config gets read from envs: https://www.postgresql.org/docs/current/libpq-envars.html
 	if err != nil {
 		panic(fmt.Errorf("an error occured while creating database connection pool: %w", err))
 	}
