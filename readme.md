@@ -51,4 +51,4 @@ Configuration
 - make different syncs run in paralel (e.g. PullRequests and repos)
 - different entities can be synced in different frequencies, such as repos vs commits
 - abstract pagination (probably using generics)
-- update to pgxpool v5 once scanny has been upgraded
+- change github to using https://github.com/google/go-github, which is able to work with teams

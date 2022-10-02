@@ -40,7 +40,37 @@ func (c *bitbucketClient) Name() string {
 }
 
 func (c *bitbucketClient) GetGroups(ctx context.Context) ([]*model.Group, error) {
-	panic("not implemented")
+	fmt.Println("fetching groups")
+	// s := &model.System{Name: system} // TODO: fetch system id from database and use it to make groups
+	var groups []*model.Group
+	// page := 1
+
+	// for {
+	// 	opts := scm.ListOptions{
+	// 		Page: page,
+	// 		Size: 1000,
+	// 	}
+	// 	repos, res, err := c.Client.Repositories.List(ctx, opts)
+	// 	if err != nil {
+	// 		return nil, fmt.Errorf("error fetching %s groups: %w", system, err)
+	// 	}
+	// 	if res.Status != 200 {
+	// 		return nil, fmt.Errorf("error fetching %s groups, received status: %d", system, res.Status)
+	// 	}
+
+	// 	page = res.Page.Next
+
+	// 	for _, r := range repos {
+	// 		if !util.Contains[string](groups, r.Namespace) {
+	// 			groups = append(groups, r.Namespace)
+	// 		}
+	// 	}
+
+	// 	if res.Page.Next == 0 {
+	// 		break
+	// 	}
+	// }
+	return groups, nil
 }
 
 func (c *bitbucketClient) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
@@ -98,10 +128,10 @@ func (c *bitbucketClient) GetOpenPullRequests(ctx context.Context) ([]*model.Pul
 		for _, r := range repos {
 			prs, res, err := c.Client.PullRequests.List(ctx, fmt.Sprintf("%v/%v", r.Namespace, r.Name), scm.PullRequestListOptions{Open: true})
 			if err != nil {
-				return nil, fmt.Errorf("error fetching repositories: %w", err)
+				return nil, fmt.Errorf("error fetching pull requests: %w", err)
 			}
 			if res.Status != 200 {
-				return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
+				return nil, fmt.Errorf("error fetching pull requests, received status: %v", res.Status)
 			}
 
 			if len(prs) > 0 {
