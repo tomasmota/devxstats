@@ -56,13 +56,16 @@ type Review struct {
 	CreatedAt time.Time
 }
 
-// TODO: add this to schema once implementation is started
+type CdPipeline struct {
+	ID      int
+	GroupID int
+	Name    string
+}
+
 type Deployment struct {
-	ID        int
-	ProjectID int
-	StartTime time.Time
-	EndTime   time.Time
-	System    string
-	Project   string
-	Succeeded bool
+	ID         int
+	PipelineId int
+	StartedAt  time.Time
+	EndedAt    time.Time
+	Status     string // one of: InProgress, AwaitingApproval, Succeeded, Failed, Canceled
 }
