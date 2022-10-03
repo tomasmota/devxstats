@@ -19,6 +19,10 @@ func (s *HTTPServer) GetSystems(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, systems)
 }
 
+func (s *HTTPServer) GetGroups(w http.ResponseWriter, r *http.Request) {
+	panic("unimplemented")
+}
+
 func (s *HTTPServer) GetRepositories(w http.ResponseWriter, r *http.Request) {
 	var filter model.RepoFilter
 	err := decoder.Decode(&filter, r.URL.Query())

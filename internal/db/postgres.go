@@ -42,7 +42,20 @@ func (db *pgdb) GetSystems(ctx context.Context) ([]*model.System, error) {
 }
 
 func (db *pgdb) AddGroup(context.Context, model.Group) error {
-	panic("unimplemented")
+	// TODO: need to fetch system ID first
+
+	// const sql = `INSERT INTO groups ("id", "name", "description", "price") VALUES ($1, $2, $3, $4);`
+	// switch _, err := db.pool.Exec(ctx, sql, params.ID, params.Name, params.Description, params.Price); {
+	// case errors.Is(err, context.Canceled), errors.Is(err, context.DeadlineExceeded):
+	// 	return err
+	// case err != nil:
+	// 	if sqlErr := db.productPgError(err); sqlErr != nil {
+	// 		return sqlErr
+	// 	}
+	// 	log.Printf("cannot create product on database: %v\n", err)
+	// 	return errors.New("cannot create product on database")
+	// }
+	return nil
 }
 
 func (db *pgdb) AddRepo(ctx context.Context, repo model.Repo) error {

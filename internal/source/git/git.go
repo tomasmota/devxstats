@@ -46,24 +46,32 @@ func NewGitSyncer(c *config.GitConfig, db db.DB) *GitSyncer {
 func (s *GitSyncer) Sync(ctx context.Context) error {
 	for _, source := range s.sources {
 		// GROUPS
-		_, err := source.GetGroups(ctx)
+		groups, err := source.GetGroups(ctx)
 		if err != nil {
 			return err
 		}
+
+		for _, g := range groups {
+			s.db.AddGroup(ctx, *g)
+			if err != nil {
+				return fmt.Errorf("error persisting group %v: %w", g.Name, err)
+			}
+		}
+		fmt.Printf("%v: finished syncing groups\n", source.Name())
 
 		// REPOS
-		_, err = source.GetRepositories(ctx)
+		repos, err := source.GetRepositories(ctx)
 		if err != nil {
 			return err
 		}
 
-		// for _, r := range repos {
-		// 	s.db.AddRepo(ctx, *r)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-		// }
-		fmt.Println("finished syncing repos from", source.Name())
+		for _, r := range repos {
+			s.db.AddRepo(ctx, *r)
+			if err != nil {
+				return fmt.Errorf("error persisting repo %v: %w", r.Name, err)
+			}
+		}
+		fmt.Printf("%v: finished syncing repos\n", source.Name())
 	}
 	return nil
 }
