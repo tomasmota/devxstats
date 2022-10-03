@@ -16,6 +16,10 @@ type githubClient struct {
 
 const system = "github"
 
+func (c *githubClient) Name() string {
+	return system
+}
+
 func NewClient(baseURL string, token string) (*githubClient, error) {
 	fmt.Println("creating github client")
 	var c *scm.Client
@@ -32,10 +36,6 @@ func NewClient(baseURL string, token string) (*githubClient, error) {
 	c.Client = util.NewBearerHttpClient(token)
 
 	return &githubClient{Client: c}, nil
-}
-
-func (c *githubClient) Name() string {
-	return system
 }
 
 func (c *githubClient) GetGroups(ctx context.Context) ([]*model.Group, error) {
@@ -60,7 +60,7 @@ func convertGroups(from ...*scm.Organization) []*model.Group {
 	return []*model.Group{{}}
 }
 
-func (c *githubClient) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
+func (c *githubClient) GetRepos(ctx context.Context) ([]*model.Repo, error) {
 	fmt.Println("fetching github repos")
 	repos := []*scm.Repository{{}} // TODO: fetch prs here
 	return convertRepositories(repos...), nil

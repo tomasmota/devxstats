@@ -16,7 +16,7 @@ type GitSyncer struct {
 }
 
 type GitClient interface {
-	GetRepositories(ctx context.Context) ([]*model.Repo, error)
+	GetRepos(ctx context.Context) ([]*model.Repo, error)
 	GetGroups(ctx context.Context) ([]*model.Group, error)
 	Name() string
 }
@@ -45,6 +45,11 @@ func NewGitSyncer(c *config.GitConfig, db db.DB) *GitSyncer {
 
 func (s *GitSyncer) Sync(ctx context.Context) error {
 	for _, source := range s.sources {
+		system, err := s.db.GetSystemByName(ctx, source.Name())
+		if err != nil {
+			return fmt.Errorf("error fetching system entity for %s: %w", source.Name(), err)
+		}
+
 		// GROUPS
 		groups, err := source.GetGroups(ctx)
 		if err != nil {
@@ -52,6 +57,7 @@ func (s *GitSyncer) Sync(ctx context.Context) error {
 		}
 
 		for _, g := range groups {
+			g.SystemID = system.ID
 			s.db.AddGroup(ctx, *g)
 			if err != nil {
 				return fmt.Errorf("error persisting group %v: %w", g.Name, err)
@@ -60,7 +66,7 @@ func (s *GitSyncer) Sync(ctx context.Context) error {
 		fmt.Printf("%v: finished syncing groups\n", source.Name())
 
 		// REPOS
-		repos, err := source.GetRepositories(ctx)
+		repos, err := source.GetRepos(ctx)
 		if err != nil {
 			return err
 		}

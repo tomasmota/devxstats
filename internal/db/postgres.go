@@ -41,20 +41,22 @@ func (db *pgdb) GetSystems(ctx context.Context) ([]*model.System, error) {
 	return systems, nil
 }
 
-func (db *pgdb) AddGroup(context.Context, model.Group) error {
-	// TODO: need to fetch system ID first
+func (db *pgdb) GetSystemByName(ctx context.Context, name string) (*model.System, error) {
+	var system model.System
+	q := fmt.Sprintf(`SELECT * FROM systems WHERE name='%s'`, name)
+	err := pgxscan.Get(ctx, db.pool, &system, q)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching systems: %w", err)
+	}
+	return &system, nil
+}
 
-	// const sql = `INSERT INTO groups ("id", "name", "description", "price") VALUES ($1, $2, $3, $4);`
-	// switch _, err := db.pool.Exec(ctx, sql, params.ID, params.Name, params.Description, params.Price); {
-	// case errors.Is(err, context.Canceled), errors.Is(err, context.DeadlineExceeded):
-	// 	return err
-	// case err != nil:
-	// 	if sqlErr := db.productPgError(err); sqlErr != nil {
-	// 		return sqlErr
-	// 	}
-	// 	log.Printf("cannot create product on database: %v\n", err)
-	// 	return errors.New("cannot create product on database")
-	// }
+func (db *pgdb) AddGroup(ctx context.Context, g model.Group) error {
+	const sql = `INSERT INTO groups ("system_id", "name", "description", "key") VALUES ($1, $2, $3, $4);`
+	_, err := db.pool.Exec(ctx, sql, g.ID, g.Name, g.Description, g.Key)
+	if err != nil {
+		return fmt.Errorf("error inserting groups into database: %w", err)
+	}
 	return nil
 }
 

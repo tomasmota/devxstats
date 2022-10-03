@@ -16,6 +16,8 @@ CREATE TABLE groups (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   system_id INT,
   name VARCHAR (255) NOT NULL,
+  description VARCHAR (255),
+  key INT NOT NULL,
   UNIQUE (system_id, name),
   CONSTRAINT fk_system FOREIGN KEY(system_id) REFERENCES systems(id)
 );
