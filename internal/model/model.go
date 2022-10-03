@@ -13,9 +13,11 @@ type System struct {
 
 // High level grouping of resources, might contain repositories or projects within
 type Group struct {
-	ID       int
-	SystemID int
-	Name     string
+	ID          int
+	SystemID    int
+	Name        string
+	Key         string
+	Description string
 }
 
 // TODO: add this to schema once implementation is started

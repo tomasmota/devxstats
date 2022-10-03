@@ -76,14 +76,3 @@ func convertRepositories(from ...*scm.Repository) []*model.Repo {
 	}
 	return to
 }
-
-func (c *githubClient) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
-	fmt.Println("fetching github open pull requests")
-	prs := []*scm.PullRequest{{}} // TODO: fetch prs here
-	return convertPullRequests(prs...), nil
-}
-
-func convertPullRequests(from ...*scm.PullRequest) []*model.PullRequest {
-	// TODO: Implement
-	return []*model.PullRequest{{}}
-}

@@ -52,34 +52,35 @@ func (c *client) ping() error {
 func (c *client) GetGroups(ctx context.Context) ([]*model.Group, error) {
 	fmt.Println("fetching groups")
 	var groups []*model.Group
-	pagedGroups := &Page{}
+	p := &Page{NextPageStart: 0}
 
-	r, err := c.httpClient.Get(fmt.Sprintf("%s/projects", c.baseURL))
-	if err != nil {
-		return nil, fmt.Errorf("error fetching projects: %w", err)
+	for {
+		r, err := c.httpClient.Get(fmt.Sprintf("%s/projects?start=%d", c.baseURL, p.NextPageStart))
+		if err != nil {
+			return nil, fmt.Errorf("error fetching projects: %w", err)
+		}
+
+		defer r.Body.Close()
+
+		err = json.NewDecoder(r.Body).Decode(p)
+		if err != nil {
+			return nil, fmt.Errorf("error decoding groups from api response: %w", err)
+		}
+
+		for _, p := range p.Projects {
+			g := p.toGroup()
+			groups = append(groups, p.toGroup())
+			fmt.Println(g.Name)
+		}
+
+		if p.IsLastPage {
+			break
+		}
 	}
 
-	defer r.Body.Close()
-
-	err = json.NewDecoder(r.Body).Decode(pagedGroups)
-	if err != nil {
-		return nil, fmt.Errorf("error decoding groups from api response: %w", err)
-	}
-
-	for _, p := range pagedGroups.Projects {
-		g := p.toGroup()
-		groups = append(groups, g)
-		fmt.Println(g.Name)
-	}
-
-	//TODO: do this on a loop
 	return groups, nil
 }
 
 func (c *client) GetRepositories(ctx context.Context) ([]*model.Repo, error) {
 	return []*model.Repo{{}}, nil
-}
-
-func (c *client) GetOpenPullRequests(ctx context.Context) ([]*model.PullRequest, error) {
-	return []*model.PullRequest{{}}, nil
 }

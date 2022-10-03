@@ -20,12 +20,10 @@ type Project struct {
 	Public      bool   `json:"public"`
 }
 
-func (p *Page) next() error {
-	panic("unimplemented")
-}
-
 func (p *Project) toGroup() *model.Group {
 	return &model.Group{
-		Name: p.Name,
+		Name:        p.Name,
+		Key:         p.Key,
+		Description: p.Description,
 	}
 }
