@@ -18,6 +18,7 @@ func NewBearerHttpClient(token string) *http.Client {
 	c.Transport = &transport.BearerToken{
 		Token: token,
 	}
+	c.Timeout = time.Second * 10
 	return c
 }
 
