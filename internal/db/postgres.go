@@ -68,6 +68,10 @@ func (db *pgdb) AddGroup(ctx context.Context, g model.Group) error {
 	return nil
 }
 
+func (db *pgdb) GetGroup(ctx context.Context, groupID int) (*model.Group, error) {
+	panic("unimplemented")
+}
+
 func (db *pgdb) GetGroups(ctx context.Context) ([]*model.Group, error) {
 	var groups []*model.Group
 	err := pgxscan.Select(ctx, db.pool, &groups, `SELECT * FROM groups`)
@@ -77,7 +81,7 @@ func (db *pgdb) GetGroups(ctx context.Context) ([]*model.Group, error) {
 	return groups, nil
 }
 
-func (db *pgdb) GetGroup(ctx context.Context, groupID int) (*model.Group, error) {
+func (db *pgdb) GetGroupsBySystem(ctx context.Context, system model.System) ([]*model.Group, error) {
 	panic("unimplemented")
 }
 

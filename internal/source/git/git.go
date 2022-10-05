@@ -16,8 +16,8 @@ type GitSyncer struct {
 }
 
 type GitClient interface {
-	GetRepos(ctx context.Context) ([]*model.Repo, error)
 	GetGroups(ctx context.Context) ([]*model.Group, error)
+	GetRepos(ctx context.Context) ([]*model.Repo, error)
 	Name() string
 }
 
