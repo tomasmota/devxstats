@@ -45,10 +45,8 @@ Configuration
 | OCTOPUS_TOKEN        | Token used for authentication | Yes      |
 
 ## TODO:
-- add db indices
 - document public methods
-- handle pagination
+- consider just changing all sources to implement Sync, and simply invoke a Sync method on them that does everything. This has the advantage that different sources might have different strategies on how to best sync all resources, so forcing a standard procedure can be harmful (e.g. octoups)
 - make different syncs run in paralel (e.g. PullRequests and repos)
 - different entities can be synced in different frequencies, such as repos vs commits
 - abstract pagination (probably using generics)
-- change github to using https://github.com/google/go-github, which is able to work with teams

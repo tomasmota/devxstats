@@ -76,8 +76,10 @@ func (c *client) GetCdPipelines(ctx context.Context, g model.Group) ([]*model.Cd
 	return pipelines, nil
 }
 
-func (client) GetDeployments(ctx context.Context) ([]*model.Deployment, error) {
+func (c *client) GetDeployments(ctx context.Context) ([]*model.Deployment, error) {
 	fmt.Printf("fetching %s deployments", system)
+	// iterate through releases and deployments within the releases
+
 	d := []*octopusdeploy.Deployment{{}} // TODO: fetch deployments
 	return convertDeployments(d...), nil
 }
