@@ -52,16 +52,31 @@ func (db *pgdb) GetSystemByName(ctx context.Context, name string) (*model.System
 }
 
 func (db *pgdb) AddGroup(ctx context.Context, g model.Group) error {
-	const sql = `INSERT INTO groups ("system_id", "name", "description", "key") VALUES ($1, $2, $3, $4);`
-	_, err := db.pool.Exec(ctx, sql, g.ID, g.Name, g.Description, g.Key)
+	const sql = `
+		INSERT INTO groups (system_id, name, description, key) 
+		VALUES ($1, $2, $3, $4)
+		ON CONFLICT (system_id, name)
+		DO
+			UPDATE SET description = EXCLUDED.description;
+	`
+	_, err := db.pool.Exec(ctx, sql, g.SystemID, g.Name, g.Description, g.Key)
 	if err != nil {
-		return fmt.Errorf("error inserting groups into database: %w", err)
+		return fmt.Errorf("error inserting group into database: %w", err)
 	}
 	return nil
 }
 
 func (db *pgdb) AddRepo(ctx context.Context, repo model.Repo) error {
 	panic("unimplemented")
+}
+
+func (db *pgdb) GetGroups(ctx context.Context) ([]*model.Group, error) {
+	var groups []*model.Group
+	err := pgxscan.Select(ctx, db.pool, &groups, `SELECT * FROM groups`)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching groups: %w", err)
+	}
+	return groups, nil
 }
 
 func (db *pgdb) GetGroup(ctx context.Context, groupID int) (*model.Group, error) {

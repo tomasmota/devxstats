@@ -20,7 +20,13 @@ func (s *HTTPServer) GetSystems(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *HTTPServer) GetGroups(w http.ResponseWriter, r *http.Request) {
-	panic("unimplemented")
+	groups, err := s.db.GetGroups(r.Context())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, groups)
 }
 
 func (s *HTTPServer) GetRepositories(w http.ResponseWriter, r *http.Request) {

@@ -1,9 +1,15 @@
 DROP TABLE IF EXISTS systems;
+
 DROP TABLE IF EXISTS groups;
+
 DROP TABLE IF EXISTS repos;
+
 DROP TABLE IF EXISTS reviews;
+
 DROP TABLE IF EXISTS pull_requests;
+
 DROP TABLE IF EXISTS cd_pipelines;
+
 DROP TABLE IF EXISTS deployments;
 
 CREATE TABLE systems (
@@ -17,7 +23,7 @@ CREATE TABLE groups (
   system_id INT,
   name VARCHAR (255) NOT NULL,
   description VARCHAR (255),
-  key INT NOT NULL,
+  key VARCHAR (255),
   UNIQUE (system_id, name),
   CONSTRAINT fk_system FOREIGN KEY(system_id) REFERENCES systems(id)
 );

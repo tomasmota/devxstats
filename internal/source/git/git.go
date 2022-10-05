@@ -58,26 +58,26 @@ func (s *GitSyncer) Sync(ctx context.Context) error {
 
 		for _, g := range groups {
 			g.SystemID = system.ID
-			s.db.AddGroup(ctx, *g)
+			err := s.db.AddGroup(ctx, *g)
 			if err != nil {
 				return fmt.Errorf("error persisting group %v: %w", g.Name, err)
 			}
 		}
 		fmt.Printf("%v: finished syncing groups\n", source.Name())
 
-		// REPOS
-		repos, err := source.GetRepos(ctx)
-		if err != nil {
-			return err
-		}
+		// // REPOS
+		// repos, err := source.GetRepos(ctx)
+		// if err != nil {
+		// 	return err
+		// }
 
-		for _, r := range repos {
-			s.db.AddRepo(ctx, *r)
-			if err != nil {
-				return fmt.Errorf("error persisting repo %v: %w", r.Name, err)
-			}
-		}
-		fmt.Printf("%v: finished syncing repos\n", source.Name())
+		// for _, r := range repos {
+		// 	s.db.AddRepo(ctx, *r)
+		// 	if err != nil {
+		// 		return fmt.Errorf("error persisting repo %v: %w", r.Name, err)
+		// 	}
+		// }
+		// fmt.Printf("%v: finished syncing repos\n", source.Name())
 	}
 	return nil
 }
