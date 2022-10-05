@@ -32,6 +32,7 @@ func InitPostgres(ctx context.Context) DB {
 	return &pgdb{pool: pool}
 }
 
+// -------------------- SYSTEMS --------------------//
 func (db *pgdb) GetSystems(ctx context.Context) ([]*model.System, error) {
 	var systems []*model.System
 	err := pgxscan.Select(ctx, db.pool, &systems, `SELECT * FROM systems`)
@@ -51,6 +52,7 @@ func (db *pgdb) GetSystemByName(ctx context.Context, name string) (*model.System
 	return &system, nil
 }
 
+// -------------------- GROUPS --------------------//
 func (db *pgdb) AddGroup(ctx context.Context, g model.Group) error {
 	const sql = `
 		INSERT INTO groups (system_id, name, description, key) 
@@ -66,10 +68,6 @@ func (db *pgdb) AddGroup(ctx context.Context, g model.Group) error {
 	return nil
 }
 
-func (db *pgdb) AddRepo(ctx context.Context, repo model.Repo) error {
-	panic("unimplemented")
-}
-
 func (db *pgdb) GetGroups(ctx context.Context) ([]*model.Group, error) {
 	var groups []*model.Group
 	err := pgxscan.Select(ctx, db.pool, &groups, `SELECT * FROM groups`)
@@ -81,6 +79,22 @@ func (db *pgdb) GetGroups(ctx context.Context) ([]*model.Group, error) {
 
 func (db *pgdb) GetGroup(ctx context.Context, groupID int) (*model.Group, error) {
 	panic("unimplemented")
+}
+
+// -------------------- REPOS --------------------//
+func (db *pgdb) AddRepo(ctx context.Context, r model.Repo) error {
+	const sql = `
+		INSERT INTO repos (group_id, scm_id, name, slug) 
+		VALUES ($1, $2, $3, $4)
+		ON CONFLICT (group_id, scm_id)
+		DO
+			UPDATE SET group_id = EXCLUDED.group_id;
+	`
+	_, err := db.pool.Exec(ctx, sql, r.GroupID, r.ScmID, r.Name, r.Slug)
+	if err != nil {
+		return fmt.Errorf("error inserting repo into database: %w", err)
+	}
+	return nil
 }
 
 func (db *pgdb) GetRepo(ctx context.Context, repoID int) (*model.Repo, error) {
