@@ -17,7 +17,6 @@ type AppConfig struct {
 type GitConfig struct {
 	Github struct {
 		Token   string `env:"GITHUB_TOKEN"`
-		Url     string `env:"GITHUB_URL"`
 		Enabled bool
 	}
 	Bitbucket struct {

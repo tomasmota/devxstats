@@ -5,27 +5,26 @@ import (
 	"time"
 )
 
+type bearerRoundTripper struct {
+	token string // Bearer token
+}
+
+func (t *bearerRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
+	r.Header.Add("Authorization", "Bearer "+t.token)
+	return http.DefaultTransport.RoundTrip(r)
+}
+
 func NewHttpClient() *http.Client {
 	return &http.Client{
 		Timeout: time.Second * 10,
 	}
 }
 
-type BearerToken struct {
-	Token string // Bearer token
-}
-
-func (t *BearerToken) RoundTrip(r *http.Request) (*http.Response, error) {
-	r.Header.Add("Authorization", "Bearer "+t.Token)
-	return http.DefaultTransport.RoundTrip(r)
-}
-
 func NewBearerHttpClient(token string) *http.Client {
 	c := NewHttpClient()
-	c.Transport = &BearerToken{
-		Token: token,
+	c.Transport = &bearerRoundTripper{
+		token: token,
 	}
-	c.Timeout = time.Second * 10
 	return c
 }
 

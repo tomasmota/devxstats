@@ -31,7 +31,7 @@ func NewGitSyncer(c *config.GitConfig, db db.DB) *GitSyncer {
 		syncer.sources = append(syncer.sources, bc)
 	}
 	if c.Github.Enabled {
-		gc, err := github.NewClient(c.Github.Url, c.Github.Token)
+		gc, err := github.NewClient(c.Github.Token)
 		if err != nil {
 			panic(err)
 		}

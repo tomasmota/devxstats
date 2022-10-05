@@ -5,17 +5,13 @@ import (
 	"devxstats/internal/model"
 	"devxstats/internal/util"
 	"fmt"
-	"net/http"
-)
 
-const (
-	apiPath = "/something/here" // TODO: set this proper
+	"github.com/google/go-github/v47/github"
 )
 
 type client struct {
-	baseURL    string
-	token      string
-	httpClient *http.Client
+	token  string
+	client *github.Client
 }
 
 const system = "github"
@@ -24,13 +20,12 @@ func (c *client) Name() string {
 	return system
 }
 
-func NewClient(baseURL string, token string) (*client, error) {
-	fmt.Printf("creating %s client, endpoint: %s\n", system, baseURL)
+func NewClient(token string) (*client, error) {
+	fmt.Printf("creating %s client\n", system)
 
 	c := &client{
-		baseURL:    fmt.Sprintf("%s%s", baseURL, apiPath),
-		token:      token,
-		httpClient: util.NewBearerHttpClient(token),
+		token:  token,
+		client: github.NewClient(util.NewBearerHttpClient(token)),
 	}
 
 	err := c.ping()
@@ -42,7 +37,11 @@ func NewClient(baseURL string, token string) (*client, error) {
 }
 
 func (c *client) ping() error {
-	// TODO: call some random endpoint just for testing connection
+	_, _, err := c.client.RateLimits(context.Background())
+	if err != nil {
+		return fmt.Errorf("error testing connection to github: %w", err)
+	}
+
 	return nil
 }
 
