@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/OctopusDeploy/go-octopusdeploy v1.8.6
-	github.com/drone/go-scm v1.27.0
 	github.com/georgysavva/scany/v2 v2.0.0-alpha.2
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/schema v1.2.0

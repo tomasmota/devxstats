@@ -3,8 +3,6 @@ package util
 import (
 	"net/http"
 	"time"
-
-	"github.com/drone/go-scm/scm/transport" // TODO: remove this dependency
 )
 
 func NewHttpClient() *http.Client {
@@ -13,9 +11,18 @@ func NewHttpClient() *http.Client {
 	}
 }
 
+type BearerToken struct {
+	Token string // Bearer token
+}
+
+func (t *BearerToken) RoundTrip(r *http.Request) (*http.Response, error) {
+	r.Header.Add("Authorization", "Bearer "+t.Token)
+	return http.DefaultTransport.RoundTrip(r)
+}
+
 func NewBearerHttpClient(token string) *http.Client {
 	c := NewHttpClient()
-	c.Transport = &transport.BearerToken{
+	c.Transport = &BearerToken{
 		Token: token,
 	}
 	c.Timeout = time.Second * 10
