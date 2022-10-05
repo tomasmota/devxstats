@@ -33,6 +33,7 @@ CREATE TABLE repos (
   group_id INT,
   scm_id INT,
   name VARCHAR (255) NOT NULL,
+  slug VARCHAR (255) NOT NULL,
   UNIQUE (scm_id, group_id),
   CONSTRAINT fk_group FOREIGN KEY(group_id) REFERENCES groups(id)
 );

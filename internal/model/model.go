@@ -20,18 +20,12 @@ type Group struct {
 	Description string
 }
 
-// TODO: add this to schema once implementation is started
-type Project struct {
-	ID      int
-	GroupID int
-	Name    string
-}
-
 type Repo struct {
 	ID      int
 	GroupID int
 	ScmID   int
 	Name    string
+	Slug    string
 }
 
 type RepoFilter struct {
