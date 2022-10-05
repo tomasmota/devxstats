@@ -15,6 +15,9 @@ type RepoPage struct {
 }
 
 type Repo struct {
+	Slug string `json:"slug"`
+	Name string `json:"name"`
+	ID   int    `json:"id"`
 }
 
 func (c *client) GetRepos(ctx context.Context) ([]*model.Repo, error) {
