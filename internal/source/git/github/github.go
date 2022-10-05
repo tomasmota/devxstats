@@ -5,74 +5,51 @@ import (
 	"devxstats/internal/model"
 	"devxstats/internal/util"
 	"fmt"
-
-	"github.com/drone/go-scm/scm"
-	"github.com/drone/go-scm/scm/driver/github"
+	"net/http"
 )
 
-type githubClient struct {
-	Client *scm.Client
+const (
+	apiPath = "/something/here" // TODO: set this proper
+)
+
+type client struct {
+	baseURL    string
+	token      string
+	httpClient *http.Client
 }
 
 const system = "github"
 
-func (c *githubClient) Name() string {
+func (c *client) Name() string {
 	return system
 }
 
-func NewClient(baseURL string, token string) (*githubClient, error) {
-	fmt.Println("creating github client")
-	var c *scm.Client
-	var err error
-	if baseURL != "" {
-		c, err = github.New(baseURL)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		c = github.NewDefault()
+func NewClient(baseURL string, token string) (*client, error) {
+	fmt.Printf("creating %s client, endpoint: %s\n", system, baseURL)
+
+	c := &client{
+		baseURL:    fmt.Sprintf("%s%s", baseURL, apiPath),
+		token:      token,
+		httpClient: util.NewBearerHttpClient(token),
 	}
 
-	c.Client = util.NewBearerHttpClient(token)
-
-	return &githubClient{Client: c}, nil
-}
-
-func (c *githubClient) GetGroups(ctx context.Context) ([]*model.Group, error) {
-	fmt.Println("get groups")
-	orgs, res, err := c.Client.Organizations.List(ctx, scm.ListOptions{})
+	err := c.ping()
 	if err != nil {
-		return nil, fmt.Errorf("error fetching repositories: %w", err)
-	}
-	if res.Status != 200 {
-		return nil, fmt.Errorf("error fetching repositories, received status: %v", res.Status)
-	}
-	for _, org := range orgs {
-		fmt.Println(org.Name)
+		return nil, fmt.Errorf("error creating %v client: %w", system, err)
 	}
 
-	repos := []*scm.Organization{{}} // TODO: fetch prs here
-	return convertGroups(repos...), nil
+	return c, nil
 }
 
-func convertGroups(from ...*scm.Organization) []*model.Group {
-	// TODO: Implement
-	return []*model.Group{{}}
+func (c *client) ping() error {
+	// TODO: call some random endpoint just for testing connection
+	return nil
 }
 
-func (c *githubClient) GetRepos(ctx context.Context) ([]*model.Repo, error) {
-	fmt.Println("fetching github repos")
-	repos := []*scm.Repository{{}} // TODO: fetch prs here
-	return convertRepositories(repos...), nil
+func (c *client) GetGroups(ctx context.Context) ([]*model.Group, error) {
+	panic("unimplemented")
 }
 
-func convertRepositories(from ...*scm.Repository) []*model.Repo {
-	// TODO: Implement
-	var to []*model.Repo
-	for _, r := range from {
-		to = append(to, &model.Repo{
-			Name: r.Name,
-		})
-	}
-	return to
+func (c *client) GetRepos(ctx context.Context) ([]*model.Repo, error) {
+	panic("unimplemented")
 }

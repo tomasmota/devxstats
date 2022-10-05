@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/drone/go-scm/scm/transport"
+	"github.com/drone/go-scm/scm/transport" // TODO: remove this dependency
 )
 
 func NewHttpClient() *http.Client {
