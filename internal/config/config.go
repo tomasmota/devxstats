@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 
@@ -34,6 +35,31 @@ type CdConfig struct {
 	}
 }
 
+func (c *AppConfig) validate() error {
+	if c.Git.Bitbucket.Enabled {
+		if c.Git.Bitbucket.Url == "" {
+			return errors.New("if bitbucket source is enabled, BITBUCKET_URL must be set")
+		}
+		if c.Git.Bitbucket.Token == "" {
+			return errors.New("if bitbucket source is enabled, BITBUCKET_TOKEN must be set")
+		}
+	}
+	if c.Git.Github.Enabled {
+		if c.Git.Github.Token == "" {
+			return errors.New("if github source is enabled, GITHUB_TOKEN must be set")
+		}
+	}
+	if c.Cd.Octopus.Enabled {
+		if c.Cd.Octopus.Url == "" {
+			return errors.New("if octopus source is enabled, OCTOPUS_URL must be set")
+		}
+		if c.Cd.Octopus.Token == "" {
+			return errors.New("if octopus source is enabled, OCTOPUS_TOKEN must be set")
+		}
+	}
+	return nil
+}
+
 func Load(ctx context.Context) *AppConfig {
 	c := &AppConfig{}
 	if err := envconfig.Process(ctx, c); err != nil {
@@ -49,5 +75,8 @@ func Load(ctx context.Context) *AppConfig {
 	c.Git.Bitbucket.Enabled = *bitbucketF
 	c.Cd.Octopus.Enabled = *octopusF
 
+	if err := c.validate(); err != nil {
+		panic(fmt.Errorf("config is not valid: %w", err))
+	}
 	return c
 }
