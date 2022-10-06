@@ -7,21 +7,20 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/OctopusDeploy/go-octopusdeploy/octopusdeploy"
-	od "github.com/OctopusDeploy/go-octopusdeploy/octopusdeploy"
+	od "github.com/OctopusDeploy/go-octopusdeploy/v2/pkg/client"
 )
 
 const system = "octopus"
 
-type client struct {
+type odClient struct {
 	client *od.Client
 }
 
-func (c *client) Name() string {
+func (c *odClient) Name() string {
 	return system
 }
 
-func NewClient(baseURL string, token string) (*client, error) {
+func NewClient(baseURL string, token string) (*odClient, error) {
 	fmt.Println("creating octopus client")
 	url, err := url.Parse(baseURL)
 	if err != nil {
@@ -33,16 +32,15 @@ func NewClient(baseURL string, token string) (*client, error) {
 		return nil, fmt.Errorf("error creating octopus client: %w", err)
 	}
 
-	return &client{client: c}, nil
+	return &odClient{client: c}, nil
 }
 
-func (c *client) GetGroups(ctx context.Context) ([]*model.Group, error) {
-	fmt.Printf("fetching %s groups", system)
+func (c *odClient) GetGroups(ctx context.Context) ([]*model.Group, error) {
+	fmt.Printf("fetching %s groups\n", system)
 	projectGroups, err := c.client.ProjectGroups.GetAll()
 	if err != nil {
 		return nil, fmt.Errorf("error fetching octopus ProjectGroups: %w", err)
 	}
-
 	var groups []*model.Group
 	for _, pg := range projectGroups {
 		groups = append(groups, &model.Group{
@@ -51,40 +49,36 @@ func (c *client) GetGroups(ctx context.Context) ([]*model.Group, error) {
 			Description: pg.Description,
 		})
 	}
-	fmt.Printf("found %d groups", len(groups)) // TODO: remove after testing
 	return groups, nil
 }
 
-func (c *client) GetCdPipelines(ctx context.Context, g model.Group) ([]*model.CdPipeline, error) {
-	fmt.Printf("fetching %s pipelines", system)
-	projects, err := c.client.Projects.GetAll()
+func (c *odClient) GetCdPipelines(ctx context.Context, g model.Group) ([]*model.CdPipeline, error) {
+	fmt.Printf("fetching %s pipelines\n", system)
+
+	p, err := c.client.ProjectGroups.GetByID(g.Key)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching octopus Project Group: %w", err)
+	}
+
+	projects, err := c.client.ProjectGroups.GetProjects(p)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching octopus Projects: %w", err)
 	}
 
 	var pipelines []*model.CdPipeline
-	for _, p := range projects { // TODO: find a solution that does not require getting all projects every time
-		if p.ProjectGroupID == g.Key {
-			pipelines = append(pipelines, &model.CdPipeline{
-				Name:    p.Name,
-				GroupID: g.ID,
-			})
-		}
+	for _, p := range projects {
+		pipelines = append(pipelines, &model.CdPipeline{
+			Name:    p.Name,
+			GroupID: g.ID,
+		})
 	}
 
 	fmt.Printf("found %d cd pipelines", len(pipelines)) // TODO: remove after testing
 	return pipelines, nil
 }
 
-func (c *client) GetDeployments(ctx context.Context) ([]*model.Deployment, error) {
-	fmt.Printf("fetching %s deployments", system)
+func (c *odClient) GetDeployments(ctx context.Context) ([]*model.Deployment, error) {
+	fmt.Printf("fetching %s deployments\n", system)
 	// iterate through releases and deployments within the releases
-
-	d := []*octopusdeploy.Deployment{{}} // TODO: fetch deployments
-	return convertDeployments(d...), nil
-}
-
-func convertDeployments(from ...*octopusdeploy.Deployment) []*model.Deployment {
-	// TODO: Implement
-	return []*model.Deployment{{}}
+	return nil, nil
 }

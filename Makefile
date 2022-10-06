@@ -25,6 +25,6 @@ pg:
 
 .PHONY: run
 run:
-	go run cmd/devxstats/main.go
+	go run cmd/devxstats/main.go --octopus
 
 .DEFAULT_GOAL := build
