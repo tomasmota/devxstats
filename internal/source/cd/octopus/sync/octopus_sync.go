@@ -82,6 +82,30 @@ func (s *OctopusSyncer) Sync(ctx context.Context) error {
 		}
 	}
 
+	var deploys []*model.Deployment
+	releases, err := s.client.Releases.Get()
+	if err != nil {
+		return fmt.Errorf("error fetching releases: %w", err)
+	}
+	for _, release := range releases.Items {
+		deployResources, err := s.client.Deployments.GetDeployments(release)
+		if err != nil {
+			return fmt.Errorf("error fetching deployments in release %v: %w", release.ID, err)
+		}
+		odDeploys, err := deployResources.GetAllPages(c.client.Sling())
+		if err != nil {
+			return fmt.Errorf("error iterating through deployments: %w", release.ID, err)
+		}
+		for _, d := range odDeploys {
+			deployment := &model.Deployment{
+				PipelineId: 123, // fetch groupid
+				StartedAt:  *d.Created,
+				EndedAt:    *d.ModifiedOn, // TODO: map this properly
+			}
+			s.db.AddDeployment(ctx, *deployment)
+		}
+	}
+
 	// Sync Deployments
 	return nil
 }

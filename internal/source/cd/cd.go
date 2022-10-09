@@ -30,9 +30,7 @@ func NewCdSyncer(c *config.CdConfig, db db.DB) *CdSyncer {
 		}
 		syncer.sources = append(syncer.sources, oc)
 	}
-
 	syncer.db = db
-
 	return syncer
 }
 

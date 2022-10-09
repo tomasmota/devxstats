@@ -16,4 +16,5 @@ type DB interface {
 	GetRepo(ctx context.Context, repoID int) (*model.Repo, error)
 	GetRepos(ctx context.Context, groupID int) (*model.Repo, error)
 	AddCdPipeline(context.Context, model.CdPipeline) error
+	AddDeployment(context.Context, model.Deployment) error
 }

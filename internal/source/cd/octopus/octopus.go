@@ -78,7 +78,26 @@ func (c *odClient) GetCdPipelines(ctx context.Context, g model.Group) ([]*model.
 }
 
 func (c *odClient) GetDeployments(ctx context.Context) ([]*model.Deployment, error) {
-	fmt.Printf("fetching %s deployments\n", system)
-	// iterate through releases and deployments within the releases
+	// fmt.Printf("fetching %s deployments\n", system)
+
+	// var deploys []*model.Deployment
+	// releases, err := c.client.Releases.Get()
+	// if err != nil {
+	// 	return nil, fmt.Errorf("error fetching releases: %w", err)
+	// }
+	// for _, release := range releases.Items {
+	// 	deployResources, err := c.client.Deployments.GetDeployments(release)
+	// 	if err != nil {
+	// 		return nil, fmt.Errorf("error fetching deployments in release %v: %w", release.ID, err)
+	// 	}
+	// 	odDeploys, err := deployResources.GetAllPages(c.client.Sling())
+	// 	if err != nil {
+	// 		return nil, fmt.Errorf("error iterating through deployments: %w", release.ID, err)
+	// 	}
+	// 	for _, d := range odDeploys {
+	// 		deploys = append(deploys, &model.Deployment{})
+	// 	}
+
+	// }
 	return nil, nil
 }
