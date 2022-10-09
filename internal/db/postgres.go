@@ -108,3 +108,7 @@ func (db *pgdb) GetRepo(ctx context.Context, repoID int) (*model.Repo, error) {
 func (db *pgdb) GetRepos(ctx context.Context, groupID int) (*model.Repo, error) {
 	panic("unimplemented")
 }
+
+func (*pgdb) AddCdPipeline(context.Context, model.CdPipeline) error {
+	panic("unimplemented")
+}

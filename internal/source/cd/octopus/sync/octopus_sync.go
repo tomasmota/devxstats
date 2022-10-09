@@ -64,9 +64,12 @@ func (s *OctopusSyncer) Sync(ctx context.Context) error {
 		return fmt.Errorf("error fetching octopus Projects: %w", err)
 	}
 	for _, g := range groups {
-		projects, err := s.client.ProjectGroups.GetProjects(*g)
+		p, err := s.client.ProjectGroups.GetByID(g.Key)
+		if err != nil {
+			return fmt.Errorf("error fetching octopus ProjectGroup %v: %w", g.Key, err)
+		}
+		projects, err := s.client.ProjectGroups.GetProjects(p)
 		for _, p := range projects {
-
 			pipeline := &model.CdPipeline{
 				Name:    p.Name,
 				GroupID: g.ID,
