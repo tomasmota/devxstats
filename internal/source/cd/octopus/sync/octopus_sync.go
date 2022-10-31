@@ -82,7 +82,6 @@ func (s *OctopusSyncer) Sync(ctx context.Context) error {
 		}
 	}
 
-	var deploys []*model.Deployment
 	releases, err := s.client.Releases.Get()
 	if err != nil {
 		return fmt.Errorf("error fetching releases: %w", err)
@@ -92,9 +91,9 @@ func (s *OctopusSyncer) Sync(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("error fetching deployments in release %v: %w", release.ID, err)
 		}
-		odDeploys, err := deployResources.GetAllPages(c.client.Sling())
+		odDeploys, err := deployResources.GetAllPages(s.client.Sling())
 		if err != nil {
-			return fmt.Errorf("error iterating through deployments: %w", release.ID, err)
+			return fmt.Errorf("error iterating through deployments in release %s: %w", release.ID, err)
 		}
 		for _, d := range odDeploys {
 			deployment := &model.Deployment{
