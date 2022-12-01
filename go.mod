@@ -8,7 +8,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/schema v1.2.0
 	github.com/jackc/pgx/v5 v5.0.4
-	github.com/sethvargo/go-envconfig v0.8.2
+	github.com/sethvargo/go-envconfig v0.8.3
 )
 
 require (
