@@ -20,7 +20,7 @@ require (
 )
 
 require (
-	github.com/OctopusDeploy/go-octopusdeploy/v2 v2.17.3
+	github.com/OctopusDeploy/go-octopusdeploy/v2 v2.17.5
 	github.com/dghubble/sling v1.4.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
@@ -32,6 +32,6 @@ require (
 	github.com/jackc/puddle/v2 v2.0.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	golang.org/x/crypto v0.3.0 // indirect
-	golang.org/x/sys v0.2.0 // indirect
-	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/text v0.5.0 // indirect
 )
