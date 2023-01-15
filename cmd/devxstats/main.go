@@ -16,6 +16,7 @@ import (
 func syncSources(ctx context.Context, c config.AppConfig, db db.DB) {
 	git := git.NewGitSyncer(c.Git, db)
 	cd := cd.NewCdSyncer(c.Cd, db)
+
 	// for {
 	err := git.Sync(ctx)
 	if err != nil {

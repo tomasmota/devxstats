@@ -46,7 +46,7 @@ Configuration
 
 ## TODO:
 - document public methods
+- use tomasmota/go-bitbucket client
 - consider just changing all sources to implement Sync, and simply invoke a Sync method on them that does everything. This has the advantage that different sources might have different strategies on how to best sync all resources, so forcing a standard procedure can be harmful (e.g. octoups)
 - different entities can be synced in different frequencies, such as repos vs commits
 - abstract pagination (probably using generics)
-- consider reusing http client made for crossplane provider
