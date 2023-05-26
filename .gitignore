@@ -2,3 +2,4 @@ bin
 .env
 local
 docker-compose.yaml
+.direnv
