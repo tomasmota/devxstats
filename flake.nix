@@ -19,10 +19,10 @@
         defaultPackage = pkgs.buildGoModule {
           name = "devxstats";
           src = gitignore.lib.gitignoreSource ./.;
-          vendorSha256 = "sha256-0D+TS/YZIwQasgv46Jl1mUBzwpTteAV6iqBHVDlG1j0=";
+          vendorSha256 = "sha256-KpBviY+m0iOiWPxVpqBYAjYzXsb7mfPSmwhc3/yxF28=";
         };
 
-        devShells.default = pkgs.mkShellNoCC {
+        devShell = pkgs.mkShellNoCC {
           packages = with pkgs; [
             go_1_20
             gotools
