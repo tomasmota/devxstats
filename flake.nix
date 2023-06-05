@@ -2,7 +2,7 @@
   description = "Go example flake for Zero to Nix";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     gitignore = {
       url = "github:hercules-ci/gitignore.nix";
@@ -29,7 +29,6 @@
             go_1_20
             gotools
             gopls
-            postgresql_15
           ];
         };
       }
