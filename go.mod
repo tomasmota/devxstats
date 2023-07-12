@@ -6,7 +6,7 @@ require (
 	github.com/georgysavva/scany/v2 v2.0.0
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/schema v1.2.0
-	github.com/jackc/pgx/v5 v5.4.1
+	github.com/jackc/pgx/v5 v5.4.2
 	github.com/sethvargo/go-envconfig v0.9.0
 )
 
