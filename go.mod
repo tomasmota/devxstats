@@ -1,6 +1,6 @@
 module devxstats
 
-go 1.19
+go 1.20
 
 require (
 	github.com/georgysavva/scany/v2 v2.0.0
