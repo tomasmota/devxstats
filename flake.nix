@@ -27,6 +27,7 @@
             go_1_20
             gotools
             gopls
+            golangci-lint
           ];
         };
       }
