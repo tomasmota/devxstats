@@ -1,9 +1,3 @@
-# If present, load environment variables from .env
-ifneq (,$(wildcard ./.env))
-    include .env
-    export
-endif
-
 .PHONY: image
 image:
 	docker build . -t devxstats
