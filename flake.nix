@@ -1,5 +1,5 @@
 {
-  description = "Go example flake for Zero to Nix";
+  description = "devxstats flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -19,14 +19,14 @@
         packages.devxstats = pkgs.buildGoModule {
           name = "devxstats";
           src = gitignore.lib.gitignoreSource ./.;
-          vendorSha256 = "sha256-KpBviY+m0iOiWPxVpqBYAjYzXsb7mfPSmwhc3/yxF28=";
+          vendorHash = "sha256-CMpwsoKV5IsAum8BZGrbweuEntgeRYn5ODMgS4ocvL0=";
         };
 
         packages.default = packages.devxstats;
 
         devShell = pkgs.mkShellNoCC {
           packages = with pkgs; [
-            go_1_20
+            go_1_22
             gotools
             gopls
             golangci-lint

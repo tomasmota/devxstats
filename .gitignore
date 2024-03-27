@@ -3,3 +3,4 @@ bin
 local
 docker-compose.yaml
 .direnv
+result
