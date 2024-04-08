@@ -3,7 +3,7 @@ module devxstats
 go 1.22
 
 require (
-	github.com/georgysavva/scany/v2 v2.1.2
+	github.com/georgysavva/scany/v2 v2.1.3
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/schema v1.2.0
 	github.com/jackc/pgx/v5 v5.0.0
